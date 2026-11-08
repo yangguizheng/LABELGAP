@@ -1,8 +1,0 @@
-class,rows_clean,rows_noisy,hidden_as_benign,noise_rate_clean_class,train_clean,val_clean,test_clean,test_affected,train_conflict_rate_clean_labels,train_conflict_rate_noisy_labels,separability_limited
-Benign,1583440,1446707,,0.094206,950064,316688,316688,62506,0.000000,0.008508,False
-Infilteration,20177,21137,12436.000000,0.616345,12106,4036,4035,2500,0.000000,0.246757,False
-DoS attacks-Slowloris,3268,4169,0.000000,0.000000,1960,654,654,0,0.000000,0.000000,False
-DoS attacks-GoldenEye,2052,3821,0.000000,0.000000,1231,410,411,0,0.000000,0.000000,False
-FTP-BruteForce,0,77278,0.000000,0.000000,0,0,0,0,,0.256463,False
-DoS attacks-SlowHTTPTest,0,55797,0.000000,0.000000,0,0,0,0,,0.185463,False
-Brute Force -Web,0,28,0.000000,0.000000,0,0,0,0,,0.000000,False

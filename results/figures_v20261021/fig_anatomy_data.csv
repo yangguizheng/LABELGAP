@@ -1,8 +1,0 @@
-class,aligned_flows_of_class,omitted_flows,omitted_share_percent,omitted_tier1,omitted_tier2
-PortScan,212826,54152,25.4443,43624.0000,10528
-DDoS,156278,30160,19.2989,0.0000,30160
-FTP-Patator,9436,1516,16.0661,0.0000,1516
-Web Attack - Brute Force,2610,1168,44.7510,0.0000,1168
-DoS Hulk,50193,1217,2.4246,21.0000,1196
-Bot,2935,973,33.1516,161.0000,812
-Web Attack - XSS,1240,603,48.6290,0.0000,603

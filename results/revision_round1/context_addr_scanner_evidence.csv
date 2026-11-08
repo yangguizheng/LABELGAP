@@ -1,5 +1,0 @@
-day,host,role,evidence_flows,tier_A,tier_B_unanimous,tier_B_ambiguous
-Wednesday-28-02-2018,172.31.69.24,src,3882,0,3882,0
-Wednesday-28-02-2018,172.31.69.24,dst,0,0,0,0
-Thursday-01-03-2018,172.31.69.13,src,17411,17403,8,0
-Thursday-01-03-2018,172.31.69.13,dst,458,458,0,0

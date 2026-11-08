@@ -1,8 +1,0 @@
-dataset,day,src,rows,share,clean_label,attack_flows_as_src,attack_flows_as_dst,main_evidence_label,top_peer_as_src,top_peer_share,top_peer_port,evidence_confirmed_share
-cicids2017,thursday,192.168.10.8,42669,0.977481,Infiltration-Portscan,36,0,Infiltration,205.174.165.73,1.000000,444,0.972222
-cicids2017,thursday,172.16.0.1,955,0.021878,Infiltration-Portscan,2180,0,Web Attack - Brute Force,192.168.10.50,1.000000,80,1.000000
-cicids2017,wednesday,192.168.10.50,24,0.000550,DoS Hulk,0,252661,DoS Hulk,,,,0.919916
-cicids2017,thursday,192.168.10.25,3,0.000069,Infiltration,0,0,,,,,
-cicids2017,tuesday,172.16.0.1,1,0.000023,SSH-Patator,13835,0,FTP-Patator,192.168.10.50,1.000000,21,0.999132
-cicids2018,Wednesday-28-02-2018,172.31.69.24,24649,0.799851,Infiltration - NMAP Portscan,3882,0,Infilteration,172.31.69.7,0.781813,22,1.000000
-cicids2018,Thursday-01-03-2018,172.31.69.13,6168,0.200149,Infiltration - NMAP Portscan,17411,458,Infilteration,172.31.69.15,0.232497,22,0.872069

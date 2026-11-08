@@ -1,9 +1,0 @@
-type_K,orig,clean_K,liu,attempted,flows
-attack_type,DoS attacks-SlowHTTPTest,FTP-BruteForce,FTP-BruteForce - Attempted,True,139882
-opposite,Infilteration,Benign,BENIGN,False,33665
-omitted,Benign,Infilteration,Infiltration - NMAP Portscan,False,30778
-opposite,Brute Force -Web,Benign,BENIGN,False,75
-opposite,FTP-BruteForce,Benign,BENIGN,False,30
-omitted,Benign,Infilteration,Infiltration - Communication Victim Attacker,False,22
-omitted,Benign,Infilteration,Infiltration - Dropbox Download,False,17
-omitted,Benign,Infilteration,Infiltration - Dropbox Download - Attempted,True,10

@@ -1,4 +1,0 @@
-variant,PortScan,DDoS,FTP-Patator,Web Attack - Brute Force,DoS Hulk,Bot,Web Attack - XSS,SSH-Patator,Infiltration,DoS Slowhttptest,DoS GoldenEye
-all covered rows (Stage I),11059,5958.0,307.0,244.0,225,192.0,130.0,11.0,5,3.0,1
-R1 tier-1 only,8898,0.0,0.0,0.0,5,25.0,0.0,0.0,5,0.0,1
-"R2 tier-1, Attempted -> BENIGN",8898,0.0,0.0,0.0,4,0.0,0.0,0.0,1,0.0,1

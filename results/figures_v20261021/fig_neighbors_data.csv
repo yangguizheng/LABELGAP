@@ -1,8 +1,0 @@
-class,other omitted flows,benign flows,labeled flows of the same class,other flows,median distance to nearest other omitted flow,median distance to nearest benign flow,median distance to nearest labeled flow of the same class
-PortScan,0.977290,0.005584,0.016882,0.000244,0.006350,2.875771,2.624922
-DDoS,0.999680,0.000283,0.000031,0.000006,0.055671,5.006103,8.252360
-FTP-Patator,0.989495,0.010505,0.000000,0.000000,0.000122,1.282118,8.993873
-Web Attack - Brute Force,0.973245,0.026755,0.000000,0.000000,0.002898,0.083730,2.728632
-DoS Hulk,0.965858,0.033842,0.000000,0.000300,0.175801,3.728731,4.808628
-Bot,0.686987,0.007830,0.305183,0.000000,0.014793,1.792311,0.026826
-Web Attack - XSS,0.981481,0.018519,0.000000,0.000000,0.002562,0.059357,2.859725

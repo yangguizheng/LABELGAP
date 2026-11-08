@@ -1,8 +1,0 @@
-class,n_test,n_affected,separability_limited,xgboost_noisy,xgboost_clean,xgboost_drop,mlp_noisy,mlp_clean,mlp_drop,cnn_noisy,cnn_clean,cnn_drop,bigru_noisy,bigru_clean,bigru_drop,transformer_noisy,transformer_clean,transformer_drop,models_failing,flagged,oracle_recovers,method_addressable
-Benign,316688,62506,False,0.810811,0.999982,0.189171,0.810664,0.999939,0.189275,0.810831,0.999947,0.189117,0.810809,0.999965,0.189157,0.810807,0.999933,0.189125,"XGBoost, MLP, 1D-CNN, BiGRU, Transformer",True,True,True
-Infilteration,4035,2500,False,0.282693,0.998678,0.715985,0.121024,0.995539,0.874515,0.121024,0.998430,0.877406,0.149360,0.994382,0.845023,0.137629,0.996861,0.859232,"XGBoost, MLP, 1D-CNN, BiGRU, Transformer",True,True,True
-DoS attacks-Slowloris,654,0,False,0.999490,1.000000,0.000510,1.000000,1.000000,0.000000,1.000000,1.000000,0.000000,0.999490,1.000000,0.000510,1.000000,1.000000,0.000000,,False,False,False
-DoS attacks-GoldenEye,411,0,False,1.000000,0.999189,-0.000811,0.998378,0.976480,-0.021898,1.000000,0.987024,-0.012976,0.970803,0.986212,0.015410,1.000000,0.982157,-0.017843,,False,False,False
-FTP-BruteForce,0,0,False,,,,,,,,,,,,,,,,,False,False,False
-DoS attacks-SlowHTTPTest,0,0,False,,,,,,,,,,,,,,,,,False,False,False
-Brute Force -Web,0,0,False,,,,,,,,,,,,,,,,,False,False,False
