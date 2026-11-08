@@ -1,0 +1,122 @@
+# Direction A, CSE-CIC-IDS2018: sensitivity of the Stage-I results to the treatment of attempted flows.
+# Convention sensitivity protocol finalized on 2026-09-28.
+# Written and committed before any variant is built, trained or evaluated.
+experiment: cicids2018_attempted_convention_sensitivity
+
+motivation: >-
+  Stage I (configs/directionA2018_common.yaml) maps every corrected label ending in "Attempted" to Benign,
+  whereas CIC-IDS2017 keeps the base attack class of attempted flows (configs/directionA_common.yaml,
+  attempted_flag ignored). In the 40% sample, 135,738 aligned flows are attempted. Original FTP-BruteForce
+  (77,268) and original DoS attacks-SlowHTTPTest (55,797) flows are both "FTP-BruteForce - Attempted" in the
+  corrected release; DoS GoldenEye (1,769), DoS Slowloris (901) and three infiltration flows are attempted.
+  This analysis tests whether the CSE-CIC-IDS2018 evaluation inversion (clean-trained 0.405-0.407 below
+  noisy-trained 0.518-0.547 Macro-F1 on the original test labels) and the 18.9% false-alarm rate survive a
+  convention that matches CIC-IDS2017, and which error type drives them.
+
+data:
+  base: >-
+    data/processed/cicids2018_labelnoise_v1.npz and results/directionA2018/row_index.parquet (Stage I, unchanged)
+  attempted_rows: >-
+    rows whose corrected attempted code is not -1; in this sample these are exactly the rows whose corrected
+    label ends in "Attempted" (asserted by the builder)
+  variants:
+    K:
+      role: primary (the CIC-IDS2017 convention)
+      clean_label: >-
+        attempted rows take the base attack class of their corrected label ("X - Attempted" becomes X, mapped
+        into the original taxonomy with the Stage-I map); all other rows keep their Stage-I clean label
+      noisy_label: unchanged (original labels)
+      unchanged: rows, split, features, preprocessing, class indices
+      retrain: >-
+        clean-trained models only; the noisy-trained models see identical rows and labels, so their Stage-I
+        test predictions are re-scored against the K test labels
+      processed_file: data/processed/cicids2018_labelnoise_attK.npz
+      runs: directionA2018_attK/clean
+    E:
+      role: secondary (attempted flows excluded)
+      rows: Stage-I rows minus the attempted rows, in training, validation and test; split membership unchanged
+      labels: Stage-I clean and noisy labels on the remaining rows
+      unchanged: >-
+        features and preprocessing (the Stage-I training-partition scaler is kept, so the removed rows are the
+        only difference from Stage I), class indices
+      retrain: both conditions
+      processed_file: data/processed/cicids2018_labelnoise_attE.npz
+      runs: directionA2018_attE/noisy and directionA2018_attE/clean
+
+training: >-
+  identical to Stage I (configs/directionA2018_common.yaml): XGBoost, MLP, 1D-CNN, BiGRU and Transformer,
+  seeds 42, 52 and 62, early stopping on the validation loss; evaluation against the corrected test labels of
+  the respective convention
+
+metrics:
+  macro_f1: >-
+    as in Stage I, the average F1 over the classes present in the respective test labels (corrected or original)
+  inversion_per_model: >-
+    seed-mean Macro-F1 on the original test labels of the clean-trained model is below that of the
+    noisy-trained model
+  gap_decomposition: >-
+    per-class F1 on the original test labels (seed means); the contribution of class k to a model's gap is
+    (F1 noisy-trained minus F1 clean-trained) divided by the number of classes present in the original test
+    labels, so the contributions sum to the Macro-F1 gap
+  class_groups:
+    infiltration: [Benign, Infilteration]
+    attack_type: [FTP-BruteForce, DoS attacks-SlowHTTPTest]
+    other: all remaining classes
+  fixed_class_macro_f1: >-
+    secondary, descriptive; Macro-F1 over the classes present in both the corrected and the original test labels
+  false_alarm_rate: share of corrected-benign test flows predicted as any attack class (Stage-I definition)
+  false_alarm_decomposition: >-
+    Stage-I convention, noisy-trained models; the corrected-benign test flows are split into attempted flows,
+    non-attempted flows whose original label is an attack, and flows benign in both versions; for each group
+    report its size, its false-alarm rate and its share of all false alarms
+  recovery: >-
+    share of omitted test flows (original Benign, corrected Infilteration) predicted as Infilteration
+
+decision_rules:
+  Q1_inversion_K:
+    applies_to: variant K (primary)
+    replicates: 5 of 5 models invert
+    partial: 1 to 4 models invert
+    absent: no model inverts
+  Q2_driver_K:
+    applies_to: >-
+      variant K, only when Q1 is replicates or partial, over the models that invert
+    infiltration_driven: >-
+      the infiltration group contributes at least 50% of the gap in a majority of the inverting models
+    attack_type_driven: >-
+      the attack-type group contributes at least 50% of the gap in a majority of the inverting models
+    mixed: otherwise
+  Q3_inversion_E:
+    applies_to: variant E (secondary)
+    rule: same thresholds as Q1
+  Q4_false_alarms: descriptive only, no verdict
+  sanity: >-
+    in K and E the clean-trained recovery of the omitted flows is at least 0.80 in at least 3 of 5 models
+    (the Stage-I headroom rule); if it fails, stop and report before any interpretation
+
+interpretation_fixed_in_advance:
+  - >-
+    Q1 replicates and Q2 infiltration_driven: CSE-CIC-IDS2018 replicates contribution 2 under the CIC-IDS2017
+    convention; the paper reports the K numbers as the primary CSE-CIC-IDS2018 result.
+  - >-
+    Q1 replicates or partial and Q2 attack_type_driven or mixed: the CSE-CIC-IDS2018 inversion is driven by
+    other label errors; contribution 2 is stated as the standard evaluation rewarding learned label errors, the
+    omission-specific reading is limited to CIC-IDS2017, and Q3 states whether the infiltration errors alone
+    produce an inversion.
+  - >-
+    Q1 absent: the inversion claim is limited to CIC-IDS2017, and CSE-CIC-IDS2018 is reported as not
+    replicating it under a consistent convention.
+
+outputs:
+  results: results/directionA2018_attempted/
+  report: reports/DIRECTION_A2018_ATTEMPTED.md
+
+amendments:
+  - date: 2026-09-28
+    what: >-
+      Technical fix, no change to any rule, metric or variant definition. The first launch stopped at the first
+      variant-E run: E's noisy training labels lack class 5 (DoS attacks-SlowHTTPTest) but contain class 6, and
+      src/training/xgb_trainer.py assumed absent classes come last. The trainer now encodes the classes present
+      in the training labels as 0..k-1 and maps the probabilities back to the full class space. For every earlier
+      run the present classes are already 0..k-1, so the mapping is the identity; re-running the variant-K smoke
+      XGBoost run gave identical predictions and probabilities (maximum difference 0.0). Completed runs are kept.

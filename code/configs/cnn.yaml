@@ -1,0 +1,7 @@
+model: cnn
+family: 1D convolutional network (B3); input read as a 1-channel sequence of length d
+params:
+  channels: [32, 64]          # Conv1d(k=3)-BatchNorm-ReLU-MaxPool(2) blocks
+  kernel_size: 3
+  fc_dim: 128
+  dropout: 0.3

@@ -1,0 +1,79 @@
+# Additional descriptive tabulations and re-scoring; no new decision rules.
+# Analysis decision recorded on 2026-09-28: CSE-CIC-IDS2018 adopts convention K as the primary convention (attempted flows
+# keep the base attack class of their corrected label, as in CIC-IDS2017), and this analysis reports the
+# attempted-flow sensitivity (reports/DIRECTION_A2018_ATTEMPTED.md) as evidence for its recommendations.
+# Written and committed before the scripts below are run.
+experiment: labelgap_revision_round1
+
+conventions:
+  primary: >-
+    K in both datasets for every analysis that uses corrected labels: an attempted flow counts as an attack of
+    its base class. CIC-IDS2017 learning experiments already follow it; the CIC-IDS2017 context-rule scoring
+    (A-D4, A-D5) treated tier-1 attempted flows as non-attacks and is re-scored under K.
+  sensitivity: Stage-I convention (attempted flows benign), reported alongside where it changes a number
+
+analyses:
+  anatomy_2018:
+    source: results/directionA_2018/label_transitions.csv (all aligned flows), excluding 21 February
+    outputs: >-
+      disagreements by type (omitted = original benign and corrected attack; opposite = original attack and
+      corrected benign; attack type = both attacks of different classes) under K and Stage I; per class, day
+      and alignment tier; the 106-flow residual; the scan-host count behind 24,615 versus 24,649
+  coverage:
+    outputs: >-
+      CSE-CIC-IDS2018 alignment coverage and tier shares by day and by original label (original label counts
+      read from the release); CIC-IDS2017 coverage and tier shares by day and by original label (noise mask)
+  feb21_offset:
+    method: >-
+      the Stage-I offset search (300,000 sampled original flows, offsets -12 to +12 h, floor and round)
+      repeated on 21 February alone
+  anatomy_2017_by_tier:
+    outputs: disagreements by type and omitted flows per class, separately for tier 1 and tier 2
+  attempted_2017:
+    method: >-
+      attempted status of the corrected flows (Liu et al. release) for the 89,914 omitted CIC-IDS2017 flows:
+      tier 1 from the exactly matched corrected flow; tier 2 from all corrected flows sharing (day, flow ID),
+      reported as all attempted, none attempted, or mixed
+  context_rules:
+    outputs: >-
+      target and exposure rules (60 and 240 min), exposure rule with cleaned evidence, and Confident Learning
+      alone, re-scored under K for both datasets; CSE-CIC-IDS2018 additionally on tier-A candidates and on
+      tier A only (candidates and evidence); share of omitted flows in tier B and share of tier-B omitted flows
+      whose corrected key group has more than one address pair; full decomposition of the cleaned rule's false
+      flags; precision and flagged share over all aligned CIC-IDS2017 flows
+    reuse: >-
+      the saved A-D5 Confident Learning flags (results/directionA_d5/cl_issues_*.npy); the rebuilt frames must
+      reproduce the A-D4 exposure-rule counts before any new number is computed
+  rescoring:
+    outputs: >-
+      Table II and Table III quantities under K for CSE-CIC-IDS2018 from the saved predictions, per-seed values
+      for both datasets, the false-alarm rate of every noise-robust run, Confident Learning flag precision and
+      recall against the K training labels, and the data of Fig. 1 (2017, 2018 K, 2018 Stage I) and Fig. 2
+  grouped_cv_flags:
+    method: >-
+      rerun A-D3 (scripts/directionA_d3_grouped_cv.py functions, same seeds) saving the per-flow flags; it must
+      reproduce the saved Stage-I precision and recall before the K precision and the omission-specific
+      precision are computed
+
+outputs:
+  results: results/revision_round1/
+  report: reports/REVISION_ROUND1.md
+
+amendments:
+  - date: 2026-09-28
+    what: >-
+      Post hoc, added after seeing the planned results: restricting the CSE-CIC-IDS2018 context-rule evidence
+      to tier-A flows cut the exposure rule's recall from 99% to 23%. Tier B only means a repeated key; a tier-B
+      flow's addresses are unambiguous when all corrected flows sharing its key have one address pair.
+      scripts/revision_r1_context_addr.py re-scores the rules with evidence restricted to flows with unambiguous
+      addresses and tabulates the tier and address composition of the scanning hosts' evidence. Reported as post hoc.
+  - date: 2026-09-28
+    what: >-
+      Added for the text, before running: scripts/revision_r1_extras.py reports the CSE-CIC-IDS2018 recall of the
+      infiltration class and the recovery of the omitted test flows on tier-A flows only under convention K,
+      and the audit effort of the exposure and cleaned rules in flagged hosts and host-hours. Descriptive.
+  - date: 2026-09-28
+    what: >-
+      Added before running: scripts/revision_r1_checks.py re-checks three statements carried into the K-convention
+      text (share of false and true evidence removed by the A-D5 cleaning; composition of the A-D1 Confident
+      Learning flags on CSE-CIC-IDS2018; labels of the infiltration-labeled flows of 192.168.10.8). Descriptive.

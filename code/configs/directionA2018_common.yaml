@@ -1,0 +1,61 @@
+# Direction A on the second dataset -- CSE-CIC-IDS2018, original vs Liu-corrected labels.
+# Criteria finalized on 2026-09-26 after the alignment check (verdict: feasible).
+# Stage-I protocol identical to CICIDS2017 (configs/directionA_common.yaml) except where noted.
+experiment: cicids2018_natural_label_noise_stage1
+
+dataset:
+  name: CSE-CIC-IDS2018 (CIC "TrafficForML" CSVs) + Liu et al. CNS 2022 corrections
+  original_dir: data/raw/IDS2018
+  corrected_dir: data/raw/liu/CSECICIDS2018_improved
+  processed_file: data/processed/cicids2018_labelnoise_v1.npz
+  rows: original rows matched to a corrected flow at tier A or tier B
+        (configs/direction_a_2018_alignment.yaml; key offset -4 h, corrected time floored)
+  excluded_days: [Wednesday-21-02-2018]      # 0.2% of its rows can be matched
+  subsample: {fraction: 0.4, seed: 2026}     # uniform over matched rows: keeps every class
+                                             # and noise proportion; train ~1M rows (2017: 0.75M)
+  features: the 78 TrafficForML columns except Timestamp and Label (Dst Port and Protocol kept);
+            the four identifier columns present only on 20-02 are dropped
+  labels:
+    noisy: original label
+    clean: corrected label mapped into the original taxonomy
+           BENIGN -> Benign; any "... - Attempted" -> Benign (dataset authors' recommendation);
+           "Infiltration - *" -> Infilteration; DoS Slowloris -> DoS attacks-Slowloris;
+           DoS GoldenEye -> DoS attacks-GoldenEye; other names mapped to their original counterpart
+  class_space: union of both label versions (classes with no clean rows are only learnable
+               from noisy labels; per-class clean metrics use classes with clean test support)
+
+split:
+  method: StratifiedGroupKFold on the clean label, groups = exact 78-feature vector
+  n_splits: 5
+  test_fold: 0
+  val_fold: 1
+  seed: 2026
+
+preprocessing:             # fitted on the training partition only (as for CICIDS2017)
+  inf: +/-inf -> NaN, then NaN -> training-partition median
+  numeric: signed log1p, then StandardScaler
+
+seeds: [42, 52, 62]
+label_conditions: [noisy, clean]
+evaluation: test set with clean labels (primary); noisy test labels used only for the masking analysis
+failure_rules: configs/direction_a_label_noise.yaml (the CICIDS2017 rules, unchanged)
+primary_outcome: recovery of the hidden attacks (original Benign, corrected Infilteration =
+                 infiltration-phase NMAP scans) -- rule A2
+
+dl_training:             # identical to CICIDS2017
+  optimizer: AdamW
+  lr: 1.0e-3
+  weight_decay: 1.0e-4
+  batch_size: 512
+  eval_batch_size: 4096
+  max_epochs: 100
+  early_stopping:
+    monitor: val_loss
+    patience: 10
+    min_delta: 1.0e-4
+  grad_clip_norm: 1.0
+  loss: cross-entropy, unweighted
+
+smoke_overrides:
+  max_epochs: 2
+  xgb_n_estimators: 20

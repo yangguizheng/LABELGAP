@@ -1,0 +1,10 @@
+model: transformer
+family: vanilla Transformer encoder (B5); FT-Transformer-style per-feature tokens + [CLS]
+params:
+  d_model: 64
+  nhead: 4
+  num_layers: 3
+  dim_feedforward: 256
+  dropout: 0.1
+  norm_first: true            # pre-LN for stable training without warm-up
+  activation: relu            # PyTorch default

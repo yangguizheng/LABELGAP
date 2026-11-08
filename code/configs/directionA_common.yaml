@@ -1,0 +1,51 @@
+# Direction A -- training under natural label noise (CICIDS2017, original vs Liu-corrected labels).
+# Initial CIC-IDS2017 comparison protocol, finalized on 2026-09-25.
+experiment: cicids2017_natural_label_noise_stage1
+
+dataset:
+  name: CICIDS2017 (original CICFlowMeter CSVs, "untampered" archive) + Liu et al. CNS 2022 corrections
+  original_parquet_dir: data/processed/original
+  noise_mask: reports/natural_noise_mask_v2.parquet
+  processed_file: data/processed/cicids2017_labelnoise_v1.npz
+  rows: original rows whose Liu label is known (mask tier 1 = exact flow match, tier 2 = unanimous
+        (day, Flow ID) group); UNLABELED rows dropped
+  features: the 77 unique MachineLearningCVE features (drop Flow ID, Source/Destination IP, Source Port,
+            Protocol, Timestamp; drop the duplicated "Fwd Header Length.1")
+  labels:
+    noisy: original label (canonical base names from nids_audit)
+    clean: Liu base label; "Infiltration-Portscan" -> "PortScan" (no such class in the original
+           taxonomy; the flows are port scans launched from the infiltrated host)
+    attempted_flag: ignored (base labels only, as in the nids_audit mask)
+
+split:
+  method: StratifiedGroupKFold on the clean label, groups = exact 78-feature vector
+  n_splits: 5
+  test_fold: 0
+  val_fold: 1          # remaining folds = training partition; no subsampling (keeps priors and noise rates)
+  seed: 2026
+
+preprocessing:         # fitted on the training partition only
+  inf: +/-inf -> NaN, then NaN -> training-partition median
+  numeric: signed log1p, then StandardScaler
+
+seeds: [42, 52, 62]
+label_conditions: [noisy, clean]   # same rows, same split; only the training/validation labels differ
+evaluation: test set with clean labels (primary); noisy test labels used only for the masking analysis
+
+dl_training:           # identical to the UNSW-NB15 Stage I protocol
+  optimizer: AdamW
+  lr: 1.0e-3
+  weight_decay: 1.0e-4
+  batch_size: 512
+  eval_batch_size: 4096
+  max_epochs: 100
+  early_stopping:
+    monitor: val_loss
+    patience: 10
+    min_delta: 1.0e-4
+  grad_clip_norm: 1.0
+  loss: cross-entropy, unweighted
+
+smoke_overrides:
+  max_epochs: 2
+  xgb_n_estimators: 20

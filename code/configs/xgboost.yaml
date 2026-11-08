@@ -1,0 +1,17 @@
+model: xgboost
+family: gradient-boosted trees (B1)
+note: no official UNSW-NB15 configuration exists; common hist-GBDT settings, not tuned
+params:
+  n_estimators: 2000          # upper bound; early stopping decides
+  learning_rate: 0.1
+  max_depth: 6                # XGBoost default
+  min_child_weight: 1         # XGBoost default
+  subsample: 0.8
+  colsample_bytree: 0.8
+  reg_lambda: 1.0             # XGBoost default
+  max_bin: 256                # XGBoost default
+  tree_method: hist
+  device: cuda
+  objective: multi:softprob
+  eval_metric: mlogloss
+  early_stopping_rounds: 50   # on validation mlogloss

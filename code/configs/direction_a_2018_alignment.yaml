@@ -1,0 +1,34 @@
+# Direction A, second dataset -- feasibility of pairing original CSE-CIC-IDS2018 rows
+# (features + original labels) with Liu et al.'s corrected flows (CNS 2022).
+# Criteria finalized on 2026-09-26. Criteria fixed before computing.
+# No model is trained.
+
+data:
+  original_dir: data/raw/IDS2018        # CIC "TrafficForML" CSVs
+  corrected_dir: data/raw/liu/CSECICIDS2018_improved
+  corrected_zip_bytes: 10426851729
+  note: 9 of the 10 original files carry no Flow ID / IPs, so the CICIDS2017 key
+        (day, Flow ID, duration, occurrence) cannot be used
+
+matching:
+  key: [Dst Port, Protocol, start time in seconds, Flow Duration,
+        fwd packets, bwd packets, fwd bytes, bwd bytes]
+  time_offset: whole-hour offset between the two versions, chosen once by maximising
+               exact key matches on a sample of Wednesday-14-02-2018 (offsets -12..+12 h,
+               corrected timestamps floored or rounded to the second)
+  tiers:
+    tier_A: key occurs exactly once in each version (one-to-one exact match)
+    tier_B: key occurs more than once, but all corrected rows sharing it carry the same
+            label and Attempted status (label transfer unambiguous)
+    ambiguous: key shared by corrected rows with different labels -> excluded
+  hidden_attack: original label Benign, corrected label not BENIGN, Attempted Category == -1
+
+feasibility:                # both criteria must hold for "feasible"
+  F1_coverage: {min_share_of_original_rows_matched: 0.20}     # tier_A + tier_B
+  F2_hidden_episodes: {min_rows_per_episode: 500, min_episodes: 2}
+                            # episode = (day, corrected class) with >= 500 matched hidden rows
+  verdicts:
+    feasible: F1 and F2 -> run direction-A Stage I on CSE-CIC-IDS2018 (second dataset)
+    no_second_episode: F1 only -> matched data exist but show no systematic hidden-attack
+                       episode of useful size; direction A falls back to the evaluation paper
+    infeasible: F1 fails -> alignment too sparse to pair labels at scale

@@ -1,0 +1,51 @@
+# Direction A, diagnostic A-D5 -- does label-free cleaning of the attack evidence rescue the
+# host/time context rule?
+# Finalized on 2026-09-26 after A-D4 (dataset-specific signal). On CSE-CIC-IDS2018
+# the A-D4 rule reached recall 0.992 but precision 0.351 because benign flows that the original
+# labels mark as attacks (DNS queries of ordinary hosts) were used as evidence.
+# Criteria fixed before computing. Clean labels are used only for scoring.
+
+seed: 2026
+window_minutes: 60            # the A-D4 V2 window with the higher precision on both datasets
+min_surviving_share: 0.5      # "at least half of the host's attack labels survive cleaning"
+
+cleaning:
+  method: >-
+    Confident Learning (cleanlab 2.7.1, find_label_issues, filter_by prune_by_noise_rate, n_jobs 1)
+    on out-of-fold XGBoost probabilities (configs/xgboost.yaml), as in A-D1
+  inputs: >-
+    original labels (all original classes) and flow features only; CICIDS2017 the 77 Stage-I
+    features, CSE-CIC-IDS2018 the 78; +/-inf and missing values -> per-feature median
+  folds: >-
+    5-fold StratifiedGroupKFold on the original label (groups = exact feature vector, seed above);
+    early stopping on a random 10% of each training fold
+  rows: >-
+    every labelled row of the A-D4 context frame (CICIDS2017 all original rows with a label;
+    CSE-CIC-IDS2018 all matched rows, Wednesday-21-02-2018 excluded)
+  surviving_evidence: original attack-labelled rows not flagged as label issues
+
+rules:
+  E2_trusted_host: >-
+    MAIN. A host is exposed on a day if at least min_surviving_share of its original
+    attack-labelled flows of that day (as source or destination) survive cleaning. Flag a
+    benign-labelled flow if its source host is exposed that day and appears (as source or
+    destination) in a surviving evidence flow within the preceding window_minutes.
+  E1_cleaned_evidence: >-
+    ablation, reported but not in the verdict -- E2 without the exposure condition
+  V2_uncleaned: >-
+    control (protocol Q3) -- A-D4 rule V2 at window_minutes; must reproduce A-D4 exactly
+  CL_only: >-
+    control (protocol Q3) -- benign-labelled rows flagged by Confident Learning itself
+
+data_and_metrics: >-
+  as A-D4. Candidates = rows labelled benign in the original; hidden attack = original benign,
+  clean attack, not Attempted; recall_hidden and precision as in A-D4. Primary subsets
+  CICIDS2017 tier 1 and CSE-CIC-IDS2018 all matched rows; CICIDS2017 all covered rows
+  reported as secondary.
+
+verdict:
+  signal: {min_recall_hidden: 0.5, min_precision: 0.8}   # per (dataset, rule), primary subset
+  method_route_open: >-
+    E2_trusted_host meets the signal on both datasets
+  route_closed: >-
+    otherwise -> the context rule does not meet the two-dataset signal criterion

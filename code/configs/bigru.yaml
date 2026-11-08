@@ -1,0 +1,6 @@
+model: bigru
+family: bidirectional GRU (B4); input read as d time steps of one scalar each
+params:
+  hidden: 64
+  num_layers: 2
+  dropout: 0.2

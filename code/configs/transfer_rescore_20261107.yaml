@@ -1,0 +1,66 @@
+# Post hoc test-label reference analysis, 2026-11-07. Re-scores saved predictions; no training.
+# Written and committed before scripts/transfer_rescore_20261107.py is run. Post hoc with respect to every earlier
+# result of this project, and reported as such.
+experiment: labelgap_transfer_rescore_20261107
+
+# h^o = trained on the original labels, h^c = trained on the corrected labels; same splits, seeds and models.
+comparisons:
+  cicids2017:
+    npz: data/processed/cicids2017_labelnoise_v1.npz
+    original: directionA/noisy
+    corrected: directionA/clean
+    sanity: {file: results/revision_round1/rescore_per_run.csv, dataset: cicids2017}
+  cicids2018_K:            # attempted flows keep the base attack class (primary convention of the paper)
+    npz: data/processed/cicids2018_labelnoise_attK.npz
+    original: directionA2018/noisy
+    corrected: directionA2018_attK/clean
+    sanity: {file: results/revision_round1/rescore_per_run.csv, dataset: cicids2018_K}
+  cicids2018_benign:       # attempted flows counted as benign (Stage-I convention)
+    npz: data/processed/cicids2018_labelnoise_v1.npz
+    original: directionA2018/noisy
+    corrected: directionA2018/clean
+    sanity: {file: results/revision_round1/rescore_per_run.csv, dataset: cicids2018_stage1}
+  cicids2018_E:            # attempted flows removed from training, validation and test
+    npz: data/processed/cicids2018_labelnoise_attE.npz
+    original: directionA2018_attE/noisy
+    corrected: directionA2018_attE/clean
+    sanity: {file: results/directionA2018_attempted/overall_per_run.csv, conv: E}
+
+subsets:
+  all: every test flow
+  tier1: test flows whose alignment key matched exactly (tier 1 of CIC-IDS2017, tier A of CSE-CIC-IDS2018)
+  tier2: the remaining CIC-IDS2017 test flows (descriptive)
+
+# Test-label references. Omitted flow = original label benign, corrected label an attack.
+references:
+  original: original test labels
+  omission_fixed: original test labels with only the omitted flows set to their corrected label
+  other_fixed: corrected test labels with the omitted flows set back to benign, i.e. every disagreement repaired except omission
+  corrected: corrected test labels
+
+metrics:
+  macro_f1: macro-F1 over the classes present in the reference (the definition used in the paper)
+  macro_f1_common: macro-F1 over the classes present in both the original and the corrected labels of the subset
+  binary: attack recall, precision and F1 with all attack classes merged
+  infiltration_f1: one-vs-rest F1 of the infiltration class
+
+sanity: >-
+  macro_f1 under the original and the corrected reference on subset all must reproduce the saved per-run values
+  named above to within 1e-6 for every model and seed, otherwise the script stops before writing results.
+
+decisions_fixed_in_advance:
+  tier1_reversal: >-
+    CIC-IDS2017. The reversal holds on tier-1 flows if, for every model, the seed-mean macro-F1 difference
+    h^c minus h^o is negative under the original reference and positive under the corrected reference.
+    The number of the 15 model-seed pairs that reverse is reported alongside.
+  omission_attribution: >-
+    CIC-IDS2017, on all test flows and on tier-1 flows. Omission accounts for the reversal if, for every model by
+    seed mean, h^c scores above h^o under omission_fixed and h^o scores above h^c under other_fixed. Otherwise the
+    text describes the reversal as a joint effect of the label versions.
+  cicids2018: >-
+    descriptive; for each attempted-flow convention, which references put h^o ahead, on all flows and on tier A.
+  common_class_set: descriptive; reported in an appendix table with the class supports.
+
+outputs:
+  results: results/transfer_rescore_20261107/
+  report: reports/TRANSFER_RESCORE_20261107.md

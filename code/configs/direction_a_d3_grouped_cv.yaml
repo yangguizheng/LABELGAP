@@ -1,0 +1,37 @@
+# Direction A, diagnostic A-D3 -- does holding out whole groups of similar flows during
+# cross-validated prediction expose the systematically hidden attacks?
+# Criteria finalized on 2026-09-26. Criteria fixed before computing.
+# Uses ONLY the noisy (original) training labels; clean labels are used only for scoring.
+
+datasets:
+  cicids2017: configs/directionA_common.yaml
+  cicids2018: configs/directionA2018_common.yaml
+rows: training partition of each dataset
+hidden: noisy label benign and clean label an attack class
+
+groupings:                         # how cross-validation folds are formed
+  exact: identical preprocessed feature vector (= standard Confident Learning grouping; baseline)
+  kmeans_64: MiniBatchKMeans k=64 on the preprocessed training features
+  kmeans_256: MiniBatchKMeans k=256
+  kmeans_1024: MiniBatchKMeans k=1024
+  time_60min: (day, 60-minute window) of the flow start time (CICIDS2017 12-hour clock fixed as in A-D2)
+kmeans: {random_state: 2026, batch_size: 65536, n_init: 3}
+
+out_of_fold:
+  folds: StratifiedGroupKFold(n_splits=5, shuffle=True, random_state=2026) on the noisy labels
+  model: XGBoost, Stage-I configuration, early stopping on the noisy validation set
+  missing_classes: classes absent from a fold's training part get probability 0
+  label_issues: cleanlab 2.7.1 find_label_issues(filter_by=prune_by_noise_rate)
+
+metrics:
+  recall_hidden: share of hidden rows flagged as label issues        # primary
+  precision: share of flagged rows whose noisy label is wrong         # primary
+  exposure_hidden: share of hidden rows predicted (out of fold) as any attack
+  exposure_true_class: share of hidden rows predicted as their clean class
+  false_exposure_benign: share of clean-benign rows (labelled benign) predicted as an attack
+
+verdict:
+  exposes: {min_recall_hidden: 0.5, min_precision: 0.8}   # per (dataset, grouping)
+  signal_found: some grouping exposes in BOTH datasets -> method design builds on it
+  dataset_specific: exposes in one dataset only
+  no_signal: no grouping exposes -> feature-only detection is not enough

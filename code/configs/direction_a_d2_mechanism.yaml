@@ -1,0 +1,33 @@
+# Direction A, diagnostic A-D2 -- where do the systematically hidden attacks sit?
+# Mechanism diagnostic for choosing the signal a new method could use (no training).
+# Criteria finalized on 2026-09-25. Readings fixed before computing.
+
+rows:
+  hidden: training-partition rows with noisy label BENIGN and clean label = attack class c
+  labelled_c: training-partition rows with noisy == clean == c (correctly labelled attacks of c)
+  benign: training-partition rows with clean label BENIGN
+  classes: clean attack classes with >= 100 hidden training rows
+  baseline_queries: up to N random labelled_c rows per class (seed 2026), same measurements
+  baseline_queries_per_class: 5000
+
+feature_space:             # preprocessed 77-d features, Euclidean, float64 on GPU
+  nearest_distances: to labelled_c, to benign, to other hidden rows (self excluded)
+  ratio: r = d(labelled_c) / d(benign)
+  neighbourhood_k: 10      # composition of the 10 nearest training rows (ties at the 10th included)
+
+context:                   # original CICFlowMeter metadata, all covered rows (train + val + test)
+  hosts: share of hidden rows covered by the top-3 source IPs / top-3 destination IPs
+  time: timestamps parsed day-first; the original files use a 12-hour clock without AM/PM,
+        capture ran ~08:00-17:00, so hours < 8 are shifted by +12
+  densest_window_minutes: 60
+  co_occurrence: share of hidden rows whose (day, 60-min window) also contains labelled_c rows
+
+attempted_flows: share of hidden rows that Liu et al. mark as "Attempted" (tier-1 matches only),
+                 since the dataset authors recommend treating Attempted flows as benign when in doubt
+
+readings:                  # per class, on the hidden rows
+  proximity_signal: median r < 1                 # closer to labelled attacks of c than to benign
+  self_cluster: median share of hidden rows among the k neighbours >= 0.5
+  host_concentration: top-3 source-IP share >= 0.8 or top-3 destination-IP share >= 0.8
+  time_concentration: densest 60-min window share >= 0.8
+  within_campaign: co_occurrence >= 0.5         # hidden rows fall inside labelled attack periods

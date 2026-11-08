@@ -1,0 +1,52 @@
+# Direction A, diagnostic A-D1 -- can off-the-shelf noise-robust learning recover the
+# systematically hidden attacks without clean labels? The protocol was finalized
+# on 2026-09-25 before the runs.
+# Training and validation use the ORIGINAL (noisy) labels only; clean labels are used
+# only for evaluation (test) and for scoring Confident Learning's detections (train).
+
+seeds: [42, 52, 62]
+references:            # Stage-I runs with the same seeds (no re-training)
+  lower: directionA/noisy     # plain cross-entropy on noisy labels
+  upper: directionA/clean     # clean-label oracle
+
+methods:
+  gce:                 # Zhang & Sabuncu, NeurIPS 2018
+    backbones: [mlp, transformer]
+    q: 0.7             # paper default
+    note: GCE replaces CE as the training loss
+  coteaching:          # Han et al., NeurIPS 2018
+    backbones: [mlp, transformer]
+    forget_rate: 0.2   # deliberately above the true (unknown to the method) 7.18% noise rate:
+                       # the most favourable non-oracle setting for dropping high-loss samples
+    t_k: 10            # epochs to ramp the forget rate (paper default)
+    evaluate: network 1 (last epoch)
+  confident_learning:  # Northcutt et al., JAIR 2021 (cleanlab 2.7.1, prune_by_noise_rate)
+    pred_probs: 5-fold cross-validated XGBoost (Stage-I config) on the training partition,
+                folds grouped by exact feature vector, early stopping on the noisy validation set
+    filter_by: prune_by_noise_rate
+    retrain_backbones: [xgboost, mlp, transformer]   # trained on the training partition minus flagged rows
+  training_budget:     # applies to every DL run in A-D1 (GCE, co-teaching, CL retraining)
+    fixed_epochs: 40   # comparable to Stage-I noisy CE runs (best epochs 19-51, median ~36)
+    selection: >-
+      last epoch, as in the original papers. NOT early stopping on the noisy
+      validation loss: that criterion rewards fitting the label noise and would
+      penalise exactly the methods that succeed in ignoring it (seen in the smoke test).
+    xgboost: CL retraining keeps XGBoost's standard early stopping on the noisy validation set
+  monitoring:          # logged every epoch, NEVER used for selection
+    val_recovery_clean: share of affected validation rows predicted with their clean label
+  everything_else: identical to the Stage-I protocol (configs/directionA_common.yaml)
+
+metrics:
+  recovery: share of affected test rows (noisy != clean label) predicted with their clean label
+  collateral: accuracy on unaffected test rows; BENIGN false-alarm rate (clean labels)
+  cl_detection: precision / recall of flagged training rows against the true affected training rows
+
+verdict:               # per (method, backbone), means over the 3 seeds
+  recovered: {min_recovery: 0.80, min_unaffected_accuracy: 0.99, max_benign_false_alarm: 0.01}
+  partial: {min_recovery: 0.20}    # below "recovered" but >= 0.20
+  fails: below 0.20
+  descriptive: max over epochs of val_recovery_clean >= 0.5 is reported as "early-learning signal present"
+  direction:
+    any_recovered: standard_method_suffices     # Q3 answered: no new method; A -> evaluation paper
+    any_partial: partial_method_space           # a new method must beat the best partial result
+    all_fail: method_space_confirmed

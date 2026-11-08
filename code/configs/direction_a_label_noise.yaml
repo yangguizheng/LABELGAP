@@ -1,0 +1,18 @@
+# Direction A -- pre-registered failure rules (written before any Stage-I run).
+# "Affected rows" = test rows whose noisy (original) label differs from the clean (Liu) label.
+min_test_support: 30          # per-class rules only for clean classes with >= 30 test rows
+min_models: 3                 # cross-model = >= 3 of the 5 model families
+data_sanity_gate:             # Step 4, before training (lesson from UNSW-NB15 D1/D2)
+  conflict_rate_limit: 0.30   # a clean class whose training rows sit >= 30% in identical-vector groups
+                              # with other CLEAN labels is marked separability-limited
+rules:
+  A1_noise_induced_class_failure:   # recall(clean-trained) - recall(noisy-trained), paired by seed
+    min_recall_drop: 0.10
+    all_seeds_positive: true
+  A2_hidden_attack_failure:         # on affected rows: share predicted with the clean label
+    noisy_trained_at_most: 0.50
+  A3_evaluation_masking:            # noisy-trained models: macro-F1 on noisy test labels - on clean labels
+    min_overstatement: 0.05
+headroom:                           # amendment "upper-bound check": a failure is method-addressable only if
+  clean_trained_recovers_at_least: 0.80   # the clean-trained oracle gets >= 0.80 on the same rows/classes
+                                          # in >= min_models models and the class is not separability-limited

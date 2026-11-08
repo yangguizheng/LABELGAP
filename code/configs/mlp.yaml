@@ -1,0 +1,5 @@
+model: mlp
+family: fully-connected network (B2)
+params:
+  hidden: [256, 128, 64]      # Linear-BatchNorm-ReLU-Dropout blocks
+  dropout: 0.2

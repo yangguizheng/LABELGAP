@@ -1,0 +1,15 @@
+# A-D1 replicated on CSE-CIC-IDS2018; protocol finalized on 2026-09-26.
+# Methods, hyper-parameters, training budget, monitoring and thresholds are those of
+# configs/direction_a_d1_noise_robust.yaml, unchanged. Fixed before running.
+base_config: configs/direction_a_d1_noise_robust.yaml
+data_config: configs/directionA2018_common.yaml
+runs_root: directionA2018          # noisy / clean references = the 2018 Stage-I runs (same seeds)
+
+primary_recovery: hidden           # verdict uses the hidden attacks only:
+  # test rows with original label Benign and corrected label = attack (the 2,500
+  # infiltration-scan rows). 2018 also contains opposite-direction label errors
+  # (attempted / over-labelled flows, 62,506 test rows) that are outside direction A;
+  # recovery on all affected rows is reported as a secondary number.
+focus_classes: [Infilteration, Benign]
+note_monitoring: the trainers' per-epoch val_recovery_clean covers all affected validation rows
+                 (both directions) in 2018; it stays descriptive and is never used for selection

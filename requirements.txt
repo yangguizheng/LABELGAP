@@ -1,0 +1,11 @@
+# Python 3.11.15; versions used for all results in the article
+numpy==2.4.6
+pandas==3.0.3
+pyarrow==25.0.0
+scipy==1.17.1
+scikit-learn==1.9.0
+xgboost==3.2.0
+torch==2.7.1
+cleanlab==2.7.1
+matplotlib==3.10.9
+PyYAML==6.0.3

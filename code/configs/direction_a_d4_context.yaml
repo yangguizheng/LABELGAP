@@ -1,0 +1,37 @@
+# Direction A, diagnostic A-D4 -- is there a host/time context signal for the hidden attacks?
+# Criteria finalized on 2026-09-26 after A-D3 (no feature-only signal).
+# Rule-based, no training. Criteria fixed before computing.
+# Inputs available without clean labels: original (noisy) labels, IPs, flow start times.
+
+rules:
+  V1_post_compromise: flag a flow labelled benign if its SOURCE host was the DESTINATION of a
+                      flow labelled as an attack within the preceding T minutes
+  V2_implicated_host: flag a flow labelled benign if its SOURCE host appeared as source OR
+                      destination of a flow labelled as an attack within the preceding T minutes
+windows_minutes: [60, 240]
+
+data:
+  cicids2017:
+    context_rows: all 3,119,345 original rows (original labels, Source/Destination IP, Timestamp;
+                  12-hour clock fixed as in A-D2)
+    evaluated_rows: rows with a Liu label (mask tier 1 or 2)
+    primary_subset: tier 1 (exact matches) -- the reliable part identified in A-D2
+  cicids2018:
+    context_rows: original rows matched to a Liu flow (tier A/B, as in the alignment check,
+                  Wednesday-21-02-2018 excluded); IPs taken from the matched Liu flow
+                  (first flow of a tier-B group); original labels and original start times
+    evaluated_rows: the same matched rows (no subsampling)
+    primary_subset: all matched rows
+
+metrics:                     # candidates = rows labelled benign in the original
+  recall_hidden: share of hidden attacks (original benign, clean attack; not "Attempted") flagged   # primary
+  precision: share of flagged candidates whose clean label is an attack                          # primary
+  flagged_share_of_candidates: how much benign-labelled traffic the rule touches
+
+verdict:
+  signal: {min_recall_hidden: 0.5, min_precision: 0.8}   # per (dataset, rule, window)
+  context_signal: >-
+    some (rule, window) meets it on BOTH datasets' primary subsets
+    -> method design: context-aware repair of systematically missing labels
+  dataset_specific: meets it on one dataset only
+  no_context_signal: none -> direction A's method route closes
