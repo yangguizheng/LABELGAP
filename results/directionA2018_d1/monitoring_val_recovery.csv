@@ -1,0 +1,19 @@
+method,model,seed,max_val_recovery,epoch_of_max,last_val_recovery
+GCE,mlp,42,0.117684,19,0.091421
+GCE,mlp,52,0.117684,9,0.116965
+GCE,mlp,62,0.118059,2,0.091014
+GCE,transformer,42,0.128658,24,0.101426
+GCE,transformer,52,0.101426,1,0.101426
+GCE,transformer,62,0.922680,2,0.101426
+Co-teaching,mlp,42,0.101301,9,0.101269
+Co-teaching,mlp,52,0.101301,10,0.101301
+Co-teaching,mlp,62,0.112056,2,0.101301
+Co-teaching,transformer,42,0.922680,11,0.922680
+Co-teaching,transformer,52,0.922680,13,0.922680
+Co-teaching,transformer,62,0.922680,12,0.922680
+Confident Learning,mlp,42,0.119591,6,0.091890
+Confident Learning,mlp,52,0.120029,2,0.113307
+Confident Learning,mlp,62,0.117621,25,0.112869
+Confident Learning,transformer,42,0.118247,5,0.093859
+Confident Learning,transformer,52,0.158861,6,0.107085
+Confident Learning,transformer,62,0.117996,25,0.113619

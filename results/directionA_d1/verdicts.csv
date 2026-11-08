@@ -1,0 +1,8 @@
+method,model,recovery,unaffected_acc,benign_false_alarm,verdict
+GCE,mlp,0.011080,0.994606,0.000866,fails
+GCE,transformer,0.011154,0.983725,0.000410,fails
+Co-teaching,mlp,0.011080,0.954823,0.000173,fails
+Co-teaching,transformer,0.011411,0.884219,0.000033,fails
+Confident Learning,xgboost,0.011779,0.998600,0.000335,fails
+Confident Learning,mlp,0.011080,0.996793,0.000872,fails
+Confident Learning,transformer,0.011099,0.997788,0.000826,fails

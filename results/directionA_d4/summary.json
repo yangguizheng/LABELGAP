@@ -1,0 +1,16 @@
+{
+  "cicids2017": {
+    "rows": 3119345,
+    "covered": 1251766,
+    "hidden_tier1": 43652,
+    "hidden_all": 89717,
+    "timestamp_parse_rate": 0.9074799356916275,
+    "flow_id_agreement": 1.0
+  },
+  "cicids2018": {
+    "matched_rows": 4022342,
+    "hidden": 30817
+  },
+  "verdict": "dataset_specific",
+  "minutes": 5.449529797117187
+}

@@ -1,0 +1,24 @@
+dataset,role,day,host,A-D4 rows,surviving_share,evidence_flows,exposed
+cicids2017,hidden-attack host,thursday,192.168.10.8,42669,0.805556,36.000000,True
+cicids2017,hidden-attack host,thursday,172.16.0.1,955,0.797706,2180.000000,True
+cicids2017,hidden-attack host,wednesday,192.168.10.50,24,0.999933,252661.000000,True
+cicids2017,hidden-attack host,thursday,192.168.10.25,3,,,False
+cicids2017,hidden-attack host,tuesday,172.16.0.1,1,0.999928,13835.000000,True
+cicids2017,A-D4 false-flag host,friday,192.168.10.9,569,0.994624,372.000000,True
+cicids2017,A-D4 false-flag host,friday,192.168.10.14,418,1.000000,348.000000,True
+cicids2017,A-D4 false-flag host,friday,192.168.10.15,388,0.998276,580.000000,True
+cicids2017,A-D4 false-flag host,thursday,192.168.10.8,361,0.805556,36.000000,True
+cicids2017,A-D4 false-flag host,friday,192.168.10.5,289,1.000000,288.000000,True
+cicids2017,A-D4 false-flag host,friday,192.168.10.12,213,1.000000,2.000000,True
+cicids2017,A-D4 false-flag host,thursday,192.168.10.50,207,0.797706,2180.000000,True
+cicids2017,A-D4 false-flag host,friday,192.168.10.8,205,1.000000,374.000000,True
+cicids2018,hidden-attack host,Wednesday-28-02-2018,172.31.69.24,24649,0.999742,3882.000000,True
+cicids2018,hidden-attack host,Thursday-01-03-2018,172.31.69.13,6168,0.907661,17869.000000,True
+cicids2018,A-D4 false-flag host,Wednesday-28-02-2018,172.31.69.6,3893,0.375000,2336.000000,False
+cicids2018,A-D4 false-flag host,Wednesday-28-02-2018,172.31.69.8,3765,0.458028,2323.000000,False
+cicids2018,A-D4 false-flag host,Wednesday-28-02-2018,172.31.69.13,3444,0.312936,3007.000000,False
+cicids2018,A-D4 false-flag host,Wednesday-28-02-2018,172.31.69.5,3072,0.300313,1918.000000,False
+cicids2018,A-D4 false-flag host,Wednesday-28-02-2018,172.31.69.14,2888,0.559126,1556.000000,True
+cicids2018,A-D4 false-flag host,Wednesday-28-02-2018,172.31.69.17,2855,0.369635,2819.000000,False
+cicids2018,A-D4 false-flag host,Wednesday-28-02-2018,172.31.69.16,2498,0.324852,2201.000000,False
+cicids2018,A-D4 false-flag host,Wednesday-28-02-2018,172.31.69.12,2491,0.450188,1857.000000,False

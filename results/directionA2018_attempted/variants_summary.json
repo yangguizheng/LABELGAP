@@ -1,0 +1,64 @@
+{
+  "attempted_rows": 135738,
+  "attempted_by_split": {
+    "train": 49053,
+    "val": 26784,
+    "test": 59901
+  },
+  "K": {
+    "processed_file": "data/processed/cicids2018_labelnoise_attK.npz",
+    "rows": {
+      "train": 965361,
+      "val": 321788,
+      "test": 321788
+    },
+    "disagreeing_rows": {
+      "train": 46316,
+      "val": 5703,
+      "test": 29649
+    },
+    "clean_classes_with_test_rows": [
+      "Benign",
+      "Infilteration",
+      "DoS attacks-Slowloris",
+      "DoS attacks-GoldenEye",
+      "FTP-BruteForce"
+    ],
+    "noisy_classes_with_test_rows": [
+      "Benign",
+      "Infilteration",
+      "DoS attacks-Slowloris",
+      "DoS attacks-GoldenEye",
+      "FTP-BruteForce",
+      "DoS attacks-SlowHTTPTest",
+      "Brute Force -Web"
+    ]
+  },
+  "E": {
+    "processed_file": "data/processed/cicids2018_labelnoise_attE.npz",
+    "rows": {
+      "train": 916308,
+      "val": 295004,
+      "test": 261887
+    },
+    "disagreeing_rows": {
+      "train": 15564,
+      "val": 5200,
+      "test": 5105
+    },
+    "clean_classes_with_test_rows": [
+      "Benign",
+      "Infilteration",
+      "DoS attacks-Slowloris",
+      "DoS attacks-GoldenEye"
+    ],
+    "noisy_classes_with_test_rows": [
+      "Benign",
+      "Infilteration",
+      "DoS attacks-Slowloris",
+      "DoS attacks-GoldenEye",
+      "FTP-BruteForce",
+      "Brute Force -Web"
+    ]
+  }
+}

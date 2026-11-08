@@ -1,0 +1,193 @@
+{
+  "sanity_max_abs_diff": {
+    "cicids2017": 4.983012020787214e-07,
+    "cicids2018_K": 4.992332398590094e-07,
+    "cicids2018_benign": 4.992332398590094e-07,
+    "cicids2018_E": 4.999451392873056e-07
+  },
+  "tier1_reversal": {
+    "holds": true,
+    "models_reversing": 5,
+    "pairs_reversing": 15,
+    "pairs": 15
+  },
+  "omission_attribution": {
+    "by_subset": {
+      "all": {
+        "hc_ahead_under_omission_fixed": 5,
+        "ho_ahead_under_other_fixed": 5,
+        "holds": true
+      },
+      "tier1": {
+        "hc_ahead_under_omission_fixed": 5,
+        "ho_ahead_under_other_fixed": 5,
+        "holds": true
+      }
+    },
+    "verdict": "omission"
+  },
+  "reversals": {
+    "cicids2017|all": {
+      "macro_f1": {
+        "pairs_reversing": 15,
+        "pairs": 15,
+        "models_ho_ahead_original": 5,
+        "models_ho_ahead_omission_fixed": 0,
+        "models_ho_ahead_other_fixed": 5,
+        "models_ho_ahead_corrected": 0
+      },
+      "macro_f1_common": {
+        "pairs_reversing": 15,
+        "pairs": 15,
+        "models_ho_ahead_original": 5,
+        "models_ho_ahead_omission_fixed": 0,
+        "models_ho_ahead_other_fixed": 5,
+        "models_ho_ahead_corrected": 0
+      }
+    },
+    "cicids2017|tier1": {
+      "macro_f1": {
+        "pairs_reversing": 15,
+        "pairs": 15,
+        "models_ho_ahead_original": 5,
+        "models_ho_ahead_omission_fixed": 0,
+        "models_ho_ahead_other_fixed": 5,
+        "models_ho_ahead_corrected": 0
+      },
+      "macro_f1_common": {
+        "pairs_reversing": 15,
+        "pairs": 15,
+        "models_ho_ahead_original": 5,
+        "models_ho_ahead_omission_fixed": 0,
+        "models_ho_ahead_other_fixed": 5,
+        "models_ho_ahead_corrected": 0
+      }
+    },
+    "cicids2017|tier2": {
+      "macro_f1": {
+        "pairs_reversing": 15,
+        "pairs": 15,
+        "models_ho_ahead_original": 5,
+        "models_ho_ahead_omission_fixed": 0,
+        "models_ho_ahead_other_fixed": 5,
+        "models_ho_ahead_corrected": 0
+      },
+      "macro_f1_common": {
+        "pairs_reversing": 15,
+        "pairs": 15,
+        "models_ho_ahead_original": 5,
+        "models_ho_ahead_omission_fixed": 0,
+        "models_ho_ahead_other_fixed": 5,
+        "models_ho_ahead_corrected": 0
+      }
+    },
+    "cicids2018_E|all": {
+      "macro_f1": {
+        "pairs_reversing": 10,
+        "pairs": 15,
+        "models_ho_ahead_original": 4,
+        "models_ho_ahead_omission_fixed": 3,
+        "models_ho_ahead_other_fixed": 0,
+        "models_ho_ahead_corrected": 0
+      },
+      "macro_f1_common": {
+        "pairs_reversing": 0,
+        "pairs": 15,
+        "models_ho_ahead_original": 0,
+        "models_ho_ahead_omission_fixed": 0,
+        "models_ho_ahead_other_fixed": 0,
+        "models_ho_ahead_corrected": 0
+      }
+    },
+    "cicids2018_E|tier1": {
+      "macro_f1": {
+        "pairs_reversing": 0,
+        "pairs": 15,
+        "models_ho_ahead_original": 0,
+        "models_ho_ahead_omission_fixed": 0,
+        "models_ho_ahead_other_fixed": 0,
+        "models_ho_ahead_corrected": 0
+      },
+      "macro_f1_common": {
+        "pairs_reversing": 0,
+        "pairs": 15,
+        "models_ho_ahead_original": 0,
+        "models_ho_ahead_omission_fixed": 0,
+        "models_ho_ahead_other_fixed": 0,
+        "models_ho_ahead_corrected": 0
+      }
+    },
+    "cicids2018_K|all": {
+      "macro_f1": {
+        "pairs_reversing": 0,
+        "pairs": 15,
+        "models_ho_ahead_original": 0,
+        "models_ho_ahead_omission_fixed": 0,
+        "models_ho_ahead_other_fixed": 0,
+        "models_ho_ahead_corrected": 0
+      },
+      "macro_f1_common": {
+        "pairs_reversing": 0,
+        "pairs": 15,
+        "models_ho_ahead_original": 0,
+        "models_ho_ahead_omission_fixed": 0,
+        "models_ho_ahead_other_fixed": 0,
+        "models_ho_ahead_corrected": 0
+      }
+    },
+    "cicids2018_K|tier1": {
+      "macro_f1": {
+        "pairs_reversing": 0,
+        "pairs": 15,
+        "models_ho_ahead_original": 0,
+        "models_ho_ahead_omission_fixed": 0,
+        "models_ho_ahead_other_fixed": 0,
+        "models_ho_ahead_corrected": 0
+      },
+      "macro_f1_common": {
+        "pairs_reversing": 0,
+        "pairs": 15,
+        "models_ho_ahead_original": 0,
+        "models_ho_ahead_omission_fixed": 0,
+        "models_ho_ahead_other_fixed": 0,
+        "models_ho_ahead_corrected": 0
+      }
+    },
+    "cicids2018_benign|all": {
+      "macro_f1": {
+        "pairs_reversing": 15,
+        "pairs": 15,
+        "models_ho_ahead_original": 5,
+        "models_ho_ahead_omission_fixed": 5,
+        "models_ho_ahead_other_fixed": 0,
+        "models_ho_ahead_corrected": 0
+      },
+      "macro_f1_common": {
+        "pairs_reversing": 15,
+        "pairs": 15,
+        "models_ho_ahead_original": 5,
+        "models_ho_ahead_omission_fixed": 1,
+        "models_ho_ahead_other_fixed": 0,
+        "models_ho_ahead_corrected": 0
+      }
+    },
+    "cicids2018_benign|tier1": {
+      "macro_f1": {
+        "pairs_reversing": 15,
+        "pairs": 15,
+        "models_ho_ahead_original": 5,
+        "models_ho_ahead_omission_fixed": 5,
+        "models_ho_ahead_other_fixed": 0,
+        "models_ho_ahead_corrected": 0
+      },
+      "macro_f1_common": {
+        "pairs_reversing": 9,
+        "pairs": 15,
+        "models_ho_ahead_original": 5,
+        "models_ho_ahead_omission_fixed": 0,
+        "models_ho_ahead_other_fixed": 0,
+        "models_ho_ahead_corrected": 0
+      }
+    }
+  }
+}

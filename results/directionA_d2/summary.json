@@ -1,0 +1,13 @@
+{
+  "timestamp_parse_rate": 1.0,
+  "classes": [
+    "PortScan",
+    "DDoS",
+    "DoS Hulk",
+    "FTP-Patator",
+    "Bot",
+    "Web Attack - Brute Force",
+    "Web Attack - XSS"
+  ],
+  "k": 10
+}

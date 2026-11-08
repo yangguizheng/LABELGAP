@@ -1,0 +1,15 @@
+convention,class,mean_points,min_points,max_points
+orig,SlowHTTPTest,8.3543,8.3536,8.3552
+orig,GoldenEye,4.2721,4.1890,4.3452
+orig,Slowloris,1.5076,1.1927,1.6317
+orig,Benign,1.5059,1.5037,1.5103
+orig,FTP brute force,0.0018,0.0000,0.0038
+orig,Web brute force,0.0000,0.0000,0.0000
+orig,Infiltration,-3.5258,-4.1364,-1.7536
+K,SlowHTTPTest,8.3543,8.3536,8.3552
+K,GoldenEye,-0.0406,-0.1338,-0.0063
+K,Slowloris,-0.1147,-0.4099,-0.0029
+K,Benign,0.0283,0.0263,0.0326
+K,FTP brute force,-10.5626,-10.5645,-10.5605
+K,Web brute force,0.0000,0.0000,0.0000
+K,Infiltration,-3.5288,-4.1313,-1.7597

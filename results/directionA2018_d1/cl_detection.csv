@@ -1,0 +1,4 @@
+seed,flagged,true_affected,true_positives,precision,recall,minutes,recall_hidden_Benign,recall_hidden_Infilteration,false_flags_labelled_Benign,false_flags_labelled_Infilteration
+42,15274,64615,15241,0.997839,0.235874,1.333519,0.244593,0.169101,33,
+52,15199,64615,15155,0.997105,0.234543,1.336348,0.242511,0.173523,41,3.000000
+62,18080,64615,18030,0.997235,0.279037,1.382350,0.292903,0.172853,48,2.000000

@@ -1,0 +1,87 @@
+{
+  "verdicts": {
+    "Q1_inversion_K": "absent",
+    "Q3_inversion_E": "partial",
+    "reference_inversion_orig": "replicates",
+    "Q2_driver_K": "not_applicable",
+    "sanity_pass": true
+  },
+  "sanity": {
+    "K": {
+      "clean_trained_recovery": {
+        "xgboost": 0.9996,
+        "mlp": 0.9972,
+        "cnn": 0.9998666666666667,
+        "bigru": 0.9984000000000001,
+        "transformer": 0.9964000000000001
+      },
+      "passes": true
+    },
+    "E": {
+      "clean_trained_recovery": {
+        "xgboost": 0.9996,
+        "mlp": 0.9962666666666666,
+        "cnn": 0.9998666666666667,
+        "bigru": 0.9969333333333333,
+        "transformer": 0.9981333333333332
+      },
+      "passes": true
+    }
+  },
+  "models": [
+    "xgboost",
+    "mlp",
+    "cnn",
+    "bigru",
+    "transformer"
+  ],
+  "classes_original_test": {
+    "orig": [
+      "Benign",
+      "Infilteration",
+      "DoS attacks-Slowloris",
+      "DoS attacks-GoldenEye",
+      "FTP-BruteForce",
+      "DoS attacks-SlowHTTPTest",
+      "Brute Force -Web"
+    ],
+    "K": [
+      "Benign",
+      "Infilteration",
+      "DoS attacks-Slowloris",
+      "DoS attacks-GoldenEye",
+      "FTP-BruteForce",
+      "DoS attacks-SlowHTTPTest",
+      "Brute Force -Web"
+    ],
+    "E": [
+      "Benign",
+      "Infilteration",
+      "DoS attacks-Slowloris",
+      "DoS attacks-GoldenEye",
+      "FTP-BruteForce",
+      "Brute Force -Web"
+    ]
+  },
+  "classes_corrected_test": {
+    "orig": [
+      "Benign",
+      "Infilteration",
+      "DoS attacks-Slowloris",
+      "DoS attacks-GoldenEye"
+    ],
+    "K": [
+      "Benign",
+      "Infilteration",
+      "DoS attacks-Slowloris",
+      "DoS attacks-GoldenEye",
+      "FTP-BruteForce"
+    ],
+    "E": [
+      "Benign",
+      "Infilteration",
+      "DoS attacks-Slowloris",
+      "DoS attacks-GoldenEye"
+    ]
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "cicids2018": {
+    "aligned_flows": 4022342,
+    "tier_A_share": 0.8855099839844548,
+    "K": {
+      "disagreeing": 204479,
+      "disagreeing_share_of_aligned": 0.05083580660222328,
+      "omitted": 30827,
+      "opposite": 33770,
+      "attack_type": 139882,
+      "omitted_share_of_disagreeing": 0.1507587576230322,
+      "opposite_share_of_disagreeing": 0.16515143364355264,
+      "attack_type_share_of_disagreeing": 0.6840898087334152,
+      "true_infiltration": 50293,
+      "true_infiltration_labeled_infiltration": 19466,
+      "true_infiltration_labeled_benign": 30827,
+      "attack_labeled_flows": 406238,
+      "infiltration_labeled_benign_share": 0.6129481239933987,
+      "omitted_by_tier": {
+        "A": 26759,
+        "B": 4068
+      },
+      "omitted_by_day": {
+        "Thursday-01-03-2018": 6172,
+        "Wednesday-28-02-2018": 24655
+      }
+    },
+    "stage1": {
+      "disagreeing": 404322,
+      "disagreeing_share_of_aligned": 0.10051905084152467,
+      "omitted": 30817,
+      "opposite": 373505,
+      "attack_type": 0,
+      "omitted_share_of_disagreeing": 0.0762189541998704,
+      "opposite_share_of_disagreeing": 0.9237810458001297,
+      "attack_type_share_of_disagreeing": 0.0,
+      "true_infiltration": 50282,
+      "true_infiltration_labeled_infiltration": 19465,
+      "true_infiltration_labeled_benign": 30817,
+      "attack_labeled_flows": 406238,
+      "infiltration_labeled_benign_share": 0.6128833379738277,
+      "omitted_by_tier": {
+        "A": 26749,
+        "B": 4068
+      },
+      "omitted_by_day": {
+        "Thursday-01-03-2018": 6168,
+        "Wednesday-28-02-2018": 24649
+      }
+    },
+    "stage1_opposite_residual": {
+      "benign_labeled_infiltration": 33665,
+      "attempted": 339735,
+      "other": 105,
+      "other_by_label": {
+        "Brute Force -Web -> BENIGN": 75,
+        "FTP-BruteForce -> BENIGN": 30
+      }
+    }
+  },
+  "feb21": {
+    "best": {
+      "mode": "floor",
+      "hours": -4,
+      "match_rate": 0.0019333333333333333
+    },
+    "match_rate_at_stage1_offset": 0.0019333333333333333,
+    "time_free_match_rate": 0.002023333333333333,
+    "time_free_match_rate_reference_day": 0.4219966666666667,
+    "reference_day": "Thursday-22-02-2018",
+    "original_rows": 1048575,
+    "corrected_rows": 6962593,
+    "original_labels": {
+      "DDOS attack-HOIC": 686012,
+      "Benign": 360833,
+      "DDOS attack-LOIC-UDP": 1730
+    }
+  },
+  "cicids2017": {
+    "labeled_flows": 2830743,
+    "aligned_flows": 1251766,
+    "coverage": 0.4422040432494225,
+    "tier_1_share": 0.21924225454278196,
+    "by_tier": {
+      "tier1_agree": 230591,
+      "tier1_omitted": 43849,
+      "tier2_agree": 931244,
+      "tier2_attack_type": 8,
+      "tier2_omitted": 46065,
+      "tier2_opposite": 9
+    },
+    "omitted": 89914,
+    "omitted_attempted_status": {
+      "attempted": 2774,
+      "mixed": 46,
+      "not attempted": 87094
+    },
+    "omitted_attempted_status_tier1": {
+      "attempted": 197,
+      "not attempted": 43652
+    }
+  },
+  "minutes": 5.380626410950208
+}

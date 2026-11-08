@@ -1,0 +1,11 @@
+{
+  "time_offset_hours": -4,
+  "rounding": "floor",
+  "sample_match_rate": 0.41364666666666666,
+  "coverage": 0.24791401041696506,
+  "F1": true,
+  "F2": true,
+  "episodes": 2,
+  "verdict": "feasible",
+  "minutes": 8.660080650282907
+}

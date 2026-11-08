@@ -1,0 +1,4 @@
+class,n_affected_test,xgboost_noisy,xgboost_clean,mlp_noisy,mlp_clean,cnn_noisy,cnn_clean,bigru_noisy,bigru_clean,transformer_noisy,transformer_clean,models_failing,models_oracle_recovers,flagged,oracle_recovers,method_addressable
+ALL,65006,0.047370,0.999985,0.043991,0.999862,0.043509,0.999979,0.044960,0.999856,0.044642,0.999897,5,5,True,True,True
+Benign,62506,0.041612,1.000000,0.041665,0.999952,0.041676,0.999984,0.041676,0.999968,0.041671,0.999957,5,5,True,True,True
+Infilteration,2500,0.191333,0.999600,0.102133,0.997600,0.089333,0.999867,0.127067,0.997067,0.118933,0.998400,5,5,True,True,True

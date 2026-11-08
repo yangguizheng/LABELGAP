@@ -1,0 +1,8 @@
+class,hidden_all,days,top3_src_share,top_src,top3_dst_share,top_dst,densest_60min_share,hidden_time_span,labelled_time_span,co_occurrence,attempted_share_tier1,tier1_rows,host_concentration,time_concentration,within_campaign
+PortScan,54152,"thursday 100%, friday 0%",0.991081,"192.168.10.8, 172.16.0.1, 192.168.10.50",0.413614,"192.168.10.14, 192.168.10.15, 192.168.10.25",0.979576,Thu 14:00–Fri 15:24,Fri 13:55–Fri 15:23,0.002788,0.000000,43624,True,True,False
+DDoS,30160,friday 100%,1.000000,192.168.10.50,1.000000,172.16.0.1,1.000000,Fri 15:56–Fri 16:16,Fri 15:56–Fri 16:16,1.000000,,0,True,True,True
+DoS Hulk,1217,wednesday 100%,1.000000,192.168.10.50,1.000000,172.16.0.1,1.000000,Wed 10:43–Wed 11:07,Wed 10:43–Wed 11:07,1.000000,0.238095,21,True,True,True
+FTP-Patator,1516,tuesday 100%,1.000000,192.168.10.50,1.000000,172.16.0.1,0.988127,Tue 09:19–Tue 10:20,Tue 09:17–Tue 10:20,1.000000,,0,True,True,True
+Bot,973,friday 100%,0.714286,"192.168.10.15, 192.168.10.8, 192.168.10.14",1.000000,"205.174.165.73, 192.168.10.5",0.258993,Fri 13:01–Fri 17:01,Fri 10:04–Fri 12:59,0.000000,1.000000,161,True,False,False
+Web Attack - Brute Force,1168,thursday 100%,1.000000,192.168.10.50,1.000000,172.16.0.1,1.000000,Thu 09:16–Thu 10:00,Thu 09:15–Thu 10:00,1.000000,,0,True,True,True
+Web Attack - XSS,603,thursday 100%,1.000000,192.168.10.50,1.000000,172.16.0.1,1.000000,Thu 10:15–Thu 10:35,Thu 10:15–Thu 10:35,1.000000,,0,True,True,True

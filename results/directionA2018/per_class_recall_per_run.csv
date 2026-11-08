@@ -1,0 +1,211 @@
+cond,model,seed,class,n_test,n_affected,recall,recall_affected,recall_unaffected
+noisy,xgboost,42,Benign,316688,62506,0.810814,0.041628,0.999965
+noisy,xgboost,42,Infilteration,4035,2500,0.276828,0.185600,0.425407
+noisy,xgboost,42,DoS attacks-Slowloris,654,0,0.998471,,0.998471
+noisy,xgboost,42,DoS attacks-GoldenEye,411,0,1.000000,,1.000000
+noisy,xgboost,42,FTP-BruteForce,0,0,,,
+noisy,xgboost,42,DoS attacks-SlowHTTPTest,0,0,,,
+noisy,xgboost,42,Brute Force -Web,0,0,,,
+noisy,xgboost,52,Benign,316688,62506,0.810804,0.041612,0.999957
+noisy,xgboost,52,Infilteration,4035,2500,0.301363,0.206800,0.455375
+noisy,xgboost,52,DoS attacks-Slowloris,654,0,1.000000,,1.000000
+noisy,xgboost,52,DoS attacks-GoldenEye,411,0,1.000000,,1.000000
+noisy,xgboost,52,FTP-BruteForce,0,0,,,
+noisy,xgboost,52,DoS attacks-SlowHTTPTest,0,0,,,
+noisy,xgboost,52,Brute Force -Web,0,0,,,
+noisy,xgboost,62,Benign,316688,62506,0.810814,0.041596,0.999972
+noisy,xgboost,62,Infilteration,4035,2500,0.269888,0.181600,0.413681
+noisy,xgboost,62,DoS attacks-Slowloris,654,0,1.000000,,1.000000
+noisy,xgboost,62,DoS attacks-GoldenEye,411,0,1.000000,,1.000000
+noisy,xgboost,62,FTP-BruteForce,0,0,,,
+noisy,xgboost,62,DoS attacks-SlowHTTPTest,0,0,,,
+noisy,xgboost,62,Brute Force -Web,0,0,,,
+noisy,mlp,42,Benign,316688,62506,0.810807,0.041676,0.999945
+noisy,mlp,42,Infilteration,4035,2500,0.000496,0.000000,0.001303
+noisy,mlp,42,DoS attacks-Slowloris,654,0,1.000000,,1.000000
+noisy,mlp,42,DoS attacks-GoldenEye,411,0,1.000000,,1.000000
+noisy,mlp,42,FTP-BruteForce,0,0,,,
+noisy,mlp,42,DoS attacks-SlowHTTPTest,0,0,,,
+noisy,mlp,42,Brute Force -Web,0,0,,,
+noisy,mlp,52,Benign,316688,62506,0.810599,0.041660,0.999689
+noisy,mlp,52,Infilteration,4035,2500,0.362577,0.306400,0.454072
+noisy,mlp,52,DoS attacks-Slowloris,654,0,1.000000,,1.000000
+noisy,mlp,52,DoS attacks-GoldenEye,411,0,1.000000,,1.000000
+noisy,mlp,52,FTP-BruteForce,0,0,,,
+noisy,mlp,52,DoS attacks-SlowHTTPTest,0,0,,,
+noisy,mlp,52,Brute Force -Web,0,0,,,
+noisy,mlp,62,Benign,316688,62506,0.810586,0.041660,0.999673
+noisy,mlp,62,Infilteration,4035,2500,0.000000,0.000000,0.000000
+noisy,mlp,62,DoS attacks-Slowloris,654,0,1.000000,,1.000000
+noisy,mlp,62,DoS attacks-GoldenEye,411,0,0.995134,,0.995134
+noisy,mlp,62,FTP-BruteForce,0,0,,,
+noisy,mlp,62,DoS attacks-SlowHTTPTest,0,0,,,
+noisy,mlp,62,Brute Force -Web,0,0,,,
+noisy,cnn,42,Benign,316688,62506,0.810820,0.041676,0.999961
+noisy,cnn,42,Infilteration,4035,2500,0.001735,0.000800,0.003257
+noisy,cnn,42,DoS attacks-Slowloris,654,0,1.000000,,1.000000
+noisy,cnn,42,DoS attacks-GoldenEye,411,0,1.000000,,1.000000
+noisy,cnn,42,FTP-BruteForce,0,0,,,
+noisy,cnn,42,DoS attacks-SlowHTTPTest,0,0,,,
+noisy,cnn,42,Brute Force -Web,0,0,,,
+noisy,cnn,52,Benign,316688,62506,0.810823,0.041676,0.999965
+noisy,cnn,52,Infilteration,4035,2500,0.113011,0.084400,0.159609
+noisy,cnn,52,DoS attacks-Slowloris,654,0,1.000000,,1.000000
+noisy,cnn,52,DoS attacks-GoldenEye,411,0,1.000000,,1.000000
+noisy,cnn,52,FTP-BruteForce,0,0,,,
+noisy,cnn,52,DoS attacks-SlowHTTPTest,0,0,,,
+noisy,cnn,52,Brute Force -Web,0,0,,,
+noisy,cnn,62,Benign,316688,62506,0.810849,0.041676,0.999996
+noisy,cnn,62,Infilteration,4035,2500,0.248327,0.182800,0.355049
+noisy,cnn,62,DoS attacks-Slowloris,654,0,1.000000,,1.000000
+noisy,cnn,62,DoS attacks-GoldenEye,411,0,1.000000,,1.000000
+noisy,cnn,62,FTP-BruteForce,0,0,,,
+noisy,cnn,62,DoS attacks-SlowHTTPTest,0,0,,,
+noisy,cnn,62,Brute Force -Web,0,0,,,
+noisy,bigru,42,Benign,316688,62506,0.810823,0.041676,0.999965
+noisy,bigru,42,Infilteration,4035,2500,0.000496,0.000800,0.000000
+noisy,bigru,42,DoS attacks-Slowloris,654,0,1.000000,,1.000000
+noisy,bigru,42,DoS attacks-GoldenEye,411,0,0.982968,,0.982968
+noisy,bigru,42,FTP-BruteForce,0,0,,,
+noisy,bigru,42,DoS attacks-SlowHTTPTest,0,0,,,
+noisy,bigru,42,Brute Force -Web,0,0,,,
+noisy,bigru,52,Benign,316688,62506,0.810773,0.041676,0.999902
+noisy,bigru,52,Infilteration,4035,2500,0.407931,0.350400,0.501629
+noisy,bigru,52,DoS attacks-Slowloris,654,0,1.000000,,1.000000
+noisy,bigru,52,DoS attacks-GoldenEye,411,0,0.990268,,0.990268
+noisy,bigru,52,FTP-BruteForce,0,0,,,
+noisy,bigru,52,DoS attacks-SlowHTTPTest,0,0,,,
+noisy,bigru,52,Brute Force -Web,0,0,,,
+noisy,bigru,62,Benign,316688,62506,0.810830,0.041676,0.999972
+noisy,bigru,62,Infilteration,4035,2500,0.039653,0.030000,0.055375
+noisy,bigru,62,DoS attacks-Slowloris,654,0,0.998471,,0.998471
+noisy,bigru,62,DoS attacks-GoldenEye,411,0,0.939173,,0.939173
+noisy,bigru,62,FTP-BruteForce,0,0,,,
+noisy,bigru,62,DoS attacks-SlowHTTPTest,0,0,,,
+noisy,bigru,62,Brute Force -Web,0,0,,,
+noisy,transformer,42,Benign,316688,62506,0.810823,0.041676,0.999965
+noisy,transformer,42,Infilteration,4035,2500,0.000000,0.000000,0.000000
+noisy,transformer,42,DoS attacks-Slowloris,654,0,1.000000,,1.000000
+noisy,transformer,42,DoS attacks-GoldenEye,411,0,1.000000,,1.000000
+noisy,transformer,42,FTP-BruteForce,0,0,,,
+noisy,transformer,42,DoS attacks-SlowHTTPTest,0,0,,,
+noisy,transformer,42,Brute Force -Web,0,0,,,
+noisy,transformer,52,Benign,316688,62506,0.810804,0.041660,0.999945
+noisy,transformer,52,Infilteration,4035,2500,0.412887,0.356800,0.504235
+noisy,transformer,52,DoS attacks-Slowloris,654,0,1.000000,,1.000000
+noisy,transformer,52,DoS attacks-GoldenEye,411,0,1.000000,,1.000000
+noisy,transformer,52,FTP-BruteForce,0,0,,,
+noisy,transformer,52,DoS attacks-SlowHTTPTest,0,0,,,
+noisy,transformer,52,Brute Force -Web,0,0,,,
+noisy,transformer,62,Benign,316688,62506,0.810795,0.041676,0.999929
+noisy,transformer,62,Infilteration,4035,2500,0.000000,0.000000,0.000000
+noisy,transformer,62,DoS attacks-Slowloris,654,0,1.000000,,1.000000
+noisy,transformer,62,DoS attacks-GoldenEye,411,0,1.000000,,1.000000
+noisy,transformer,62,FTP-BruteForce,0,0,,,
+noisy,transformer,62,DoS attacks-SlowHTTPTest,0,0,,,
+noisy,transformer,62,Brute Force -Web,0,0,,,
+clean,xgboost,42,Benign,316688,62506,0.999981,1.000000,0.999976
+clean,xgboost,42,Infilteration,4035,2500,0.999009,0.999600,0.998046
+clean,xgboost,42,DoS attacks-Slowloris,654,0,1.000000,,1.000000
+clean,xgboost,42,DoS attacks-GoldenEye,411,0,0.997567,,0.997567
+clean,xgboost,42,FTP-BruteForce,0,0,,,
+clean,xgboost,42,DoS attacks-SlowHTTPTest,0,0,,,
+clean,xgboost,42,Brute Force -Web,0,0,,,
+clean,xgboost,52,Benign,316688,62506,0.999984,1.000000,0.999980
+clean,xgboost,52,Infilteration,4035,2500,0.998513,0.999600,0.996743
+clean,xgboost,52,DoS attacks-Slowloris,654,0,1.000000,,1.000000
+clean,xgboost,52,DoS attacks-GoldenEye,411,0,1.000000,,1.000000
+clean,xgboost,52,FTP-BruteForce,0,0,,,
+clean,xgboost,52,DoS attacks-SlowHTTPTest,0,0,,,
+clean,xgboost,52,Brute Force -Web,0,0,,,
+clean,xgboost,62,Benign,316688,62506,0.999981,1.000000,0.999976
+clean,xgboost,62,Infilteration,4035,2500,0.998513,0.999600,0.996743
+clean,xgboost,62,DoS attacks-Slowloris,654,0,1.000000,,1.000000
+clean,xgboost,62,DoS attacks-GoldenEye,411,0,1.000000,,1.000000
+clean,xgboost,62,FTP-BruteForce,0,0,,,
+clean,xgboost,62,DoS attacks-SlowHTTPTest,0,0,,,
+clean,xgboost,62,Brute Force -Web,0,0,,,
+clean,mlp,42,Benign,316688,62506,0.999940,0.999952,0.999937
+clean,mlp,42,Infilteration,4035,2500,0.996035,0.998400,0.992182
+clean,mlp,42,DoS attacks-Slowloris,654,0,1.000000,,1.000000
+clean,mlp,42,DoS attacks-GoldenEye,411,0,0.997567,,0.997567
+clean,mlp,42,FTP-BruteForce,0,0,,,
+clean,mlp,42,DoS attacks-SlowHTTPTest,0,0,,,
+clean,mlp,42,Brute Force -Web,0,0,,,
+clean,mlp,52,Benign,316688,62506,0.999915,0.999952,0.999906
+clean,mlp,52,Infilteration,4035,2500,0.995043,0.996800,0.992182
+clean,mlp,52,DoS attacks-Slowloris,654,0,1.000000,,1.000000
+clean,mlp,52,DoS attacks-GoldenEye,411,0,0.961071,,0.961071
+clean,mlp,52,FTP-BruteForce,0,0,,,
+clean,mlp,52,DoS attacks-SlowHTTPTest,0,0,,,
+clean,mlp,52,Brute Force -Web,0,0,,,
+clean,mlp,62,Benign,316688,62506,0.999962,0.999952,0.999965
+clean,mlp,62,Infilteration,4035,2500,0.995539,0.997600,0.992182
+clean,mlp,62,DoS attacks-Slowloris,654,0,1.000000,,1.000000
+clean,mlp,62,DoS attacks-GoldenEye,411,0,0.970803,,0.970803
+clean,mlp,62,FTP-BruteForce,0,0,,,
+clean,mlp,62,DoS attacks-SlowHTTPTest,0,0,,,
+clean,mlp,62,Brute Force -Web,0,0,,,
+clean,cnn,42,Benign,316688,62506,0.999953,0.999984,0.999945
+clean,cnn,42,Infilteration,4035,2500,0.998513,0.999600,0.996743
+clean,cnn,42,DoS attacks-Slowloris,654,0,1.000000,,1.000000
+clean,cnn,42,DoS attacks-GoldenEye,411,0,1.000000,,1.000000
+clean,cnn,42,FTP-BruteForce,0,0,,,
+clean,cnn,42,DoS attacks-SlowHTTPTest,0,0,,,
+clean,cnn,42,Brute Force -Web,0,0,,,
+clean,cnn,52,Benign,316688,62506,0.999937,0.999984,0.999925
+clean,cnn,52,Infilteration,4035,2500,0.998761,1.000000,0.996743
+clean,cnn,52,DoS attacks-Slowloris,654,0,1.000000,,1.000000
+clean,cnn,52,DoS attacks-GoldenEye,411,0,1.000000,,1.000000
+clean,cnn,52,FTP-BruteForce,0,0,,,
+clean,cnn,52,DoS attacks-SlowHTTPTest,0,0,,,
+clean,cnn,52,Brute Force -Web,0,0,,,
+clean,cnn,62,Benign,316688,62506,0.999953,0.999984,0.999945
+clean,cnn,62,Infilteration,4035,2500,0.998017,1.000000,0.994788
+clean,cnn,62,DoS attacks-Slowloris,654,0,1.000000,,1.000000
+clean,cnn,62,DoS attacks-GoldenEye,411,0,0.961071,,0.961071
+clean,cnn,62,FTP-BruteForce,0,0,,,
+clean,cnn,62,DoS attacks-SlowHTTPTest,0,0,,,
+clean,cnn,62,Brute Force -Web,0,0,,,
+clean,bigru,42,Benign,316688,62506,0.999984,0.999984,0.999984
+clean,bigru,42,Infilteration,4035,2500,0.996035,0.998000,0.992834
+clean,bigru,42,DoS attacks-Slowloris,654,0,1.000000,,1.000000
+clean,bigru,42,DoS attacks-GoldenEye,411,0,1.000000,,1.000000
+clean,bigru,42,FTP-BruteForce,0,0,,,
+clean,bigru,42,DoS attacks-SlowHTTPTest,0,0,,,
+clean,bigru,42,Brute Force -Web,0,0,,,
+clean,bigru,52,Benign,316688,62506,0.999959,0.999968,0.999957
+clean,bigru,52,Infilteration,4035,2500,0.992069,0.996400,0.985016
+clean,bigru,52,DoS attacks-Slowloris,654,0,1.000000,,1.000000
+clean,bigru,52,DoS attacks-GoldenEye,411,0,0.997567,,0.997567
+clean,bigru,52,FTP-BruteForce,0,0,,,
+clean,bigru,52,DoS attacks-SlowHTTPTest,0,0,,,
+clean,bigru,52,Brute Force -Web,0,0,,,
+clean,bigru,62,Benign,316688,62506,0.999953,0.999952,0.999953
+clean,bigru,62,Infilteration,4035,2500,0.995043,0.996800,0.992182
+clean,bigru,62,DoS attacks-Slowloris,654,0,1.000000,,1.000000
+clean,bigru,62,DoS attacks-GoldenEye,411,0,0.961071,,0.961071
+clean,bigru,62,FTP-BruteForce,0,0,,,
+clean,bigru,62,DoS attacks-SlowHTTPTest,0,0,,,
+clean,bigru,62,Brute Force -Web,0,0,,,
+clean,transformer,42,Benign,316688,62506,0.999953,0.999936,0.999957
+clean,transformer,42,Infilteration,4035,2500,0.996778,0.998800,0.993485
+clean,transformer,42,DoS attacks-Slowloris,654,0,1.000000,,1.000000
+clean,transformer,42,DoS attacks-GoldenEye,411,0,0.990268,,0.990268
+clean,transformer,42,FTP-BruteForce,0,0,,,
+clean,transformer,42,DoS attacks-SlowHTTPTest,0,0,,,
+clean,transformer,42,Brute Force -Web,0,0,,,
+clean,transformer,52,Benign,316688,62506,0.999899,0.999952,0.999886
+clean,transformer,52,Infilteration,4035,2500,0.996283,0.998400,0.992834
+clean,transformer,52,DoS attacks-Slowloris,654,0,1.000000,,1.000000
+clean,transformer,52,DoS attacks-GoldenEye,411,0,0.956204,,0.956204
+clean,transformer,52,FTP-BruteForce,0,0,,,
+clean,transformer,52,DoS attacks-SlowHTTPTest,0,0,,,
+clean,transformer,52,Brute Force -Web,0,0,,,
+clean,transformer,62,Benign,316688,62506,0.999946,0.999984,0.999937
+clean,transformer,62,Infilteration,4035,2500,0.997522,0.998000,0.996743
+clean,transformer,62,DoS attacks-Slowloris,654,0,1.000000,,1.000000
+clean,transformer,62,DoS attacks-GoldenEye,411,0,1.000000,,1.000000
+clean,transformer,62,FTP-BruteForce,0,0,,,
+clean,transformer,62,DoS attacks-SlowHTTPTest,0,0,,,
+clean,transformer,62,Brute Force -Web,0,0,,,

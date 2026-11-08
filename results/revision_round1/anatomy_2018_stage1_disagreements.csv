@@ -1,0 +1,12 @@
+type_stage1,orig,clean_stage1,liu,attempted,flows
+opposite,FTP-BruteForce,Benign,FTP-BruteForce - Attempted,True,193319
+opposite,DoS attacks-SlowHTTPTest,Benign,FTP-BruteForce - Attempted,True,139882
+opposite,Infilteration,Benign,BENIGN,False,33665
+omitted,Benign,Infilteration,Infiltration - NMAP Portscan,False,30778
+opposite,DoS attacks-GoldenEye,Benign,DoS GoldenEye - Attempted,True,4301
+opposite,DoS attacks-Slowloris,Benign,DoS Slowloris - Attempted,True,2232
+opposite,Brute Force -Web,Benign,BENIGN,False,75
+opposite,FTP-BruteForce,Benign,BENIGN,False,30
+omitted,Benign,Infilteration,Infiltration - Communication Victim Attacker,False,22
+omitted,Benign,Infilteration,Infiltration - Dropbox Download,False,17
+opposite,Infilteration,Benign,Infiltration - Dropbox Download - Attempted,True,1

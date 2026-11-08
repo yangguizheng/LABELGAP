@@ -1,0 +1,92 @@
+{
+  "learning_2018_K": {
+    "corrected labels | bigru": {
+      "infiltration_recall": 0.996,
+      "recovery_all": 0.9984,
+      "recovery_tier_A": 0.9991
+    },
+    "corrected labels | cnn": {
+      "infiltration_recall": 0.9988,
+      "recovery_all": 0.9999,
+      "recovery_tier_A": 1.0
+    },
+    "corrected labels | mlp": {
+      "infiltration_recall": 0.9945,
+      "recovery_all": 0.9972,
+      "recovery_tier_A": 0.9981
+    },
+    "corrected labels | transformer": {
+      "infiltration_recall": 0.9945,
+      "recovery_all": 0.9964,
+      "recovery_tier_A": 0.9972
+    },
+    "corrected labels | xgboost": {
+      "infiltration_recall": 0.9989,
+      "recovery_all": 0.9996,
+      "recovery_tier_A": 0.9995
+    },
+    "original labels | bigru": {
+      "infiltration_recall": 0.1493,
+      "recovery_all": 0.1271,
+      "recovery_tier_A": 0.1468
+    },
+    "original labels | cnn": {
+      "infiltration_recall": 0.121,
+      "recovery_all": 0.0893,
+      "recovery_tier_A": 0.103
+    },
+    "original labels | mlp": {
+      "infiltration_recall": 0.121,
+      "recovery_all": 0.1021,
+      "recovery_tier_A": 0.1179
+    },
+    "original labels | transformer": {
+      "infiltration_recall": 0.1376,
+      "recovery_all": 0.1189,
+      "recovery_tier_A": 0.1372
+    },
+    "original labels | xgboost": {
+      "infiltration_recall": 0.2826,
+      "recovery_all": 0.1913,
+      "recovery_tier_A": 0.212
+    }
+  },
+  "omitted_test": 2500,
+  "omitted_test_tier_A": 2162,
+  "cicids2018": {
+    "exposure_60": {
+      "flagged_flows": 87235,
+      "hosts": 635,
+      "host_hours": 897
+    },
+    "cleaned": {
+      "flagged_flows": 48307,
+      "hosts": 163,
+      "host_hours": 255
+    },
+    "candidate_hosts": 39810
+  },
+  "cicids2017": {
+    "exposure_60_tier1": {
+      "flagged_flows": 45767,
+      "hosts": 16,
+      "host_hours": 51
+    },
+    "cleaned_tier1": {
+      "flagged_flows": 45732,
+      "hosts": 16,
+      "host_hours": 51
+    },
+    "exposure_60_all_aligned": {
+      "flagged_flows": 119366,
+      "hosts": 16,
+      "host_hours": 53
+    },
+    "cleaned_all_aligned": {
+      "flagged_flows": 118847,
+      "hosts": 16,
+      "host_hours": 53
+    },
+    "candidate_hosts_tier1": 123
+  }
+}

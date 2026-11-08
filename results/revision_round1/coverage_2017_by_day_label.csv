@@ -1,0 +1,20 @@
+day,original_label,original_flows,aligned_flows,tier_1,coverage
+friday,BENIGN,414322,163843,11536,0.395448
+friday,Bot,1966,1966,0,1.000000
+friday,DDoS,128027,126118,16,0.985089
+friday,PortScan,158930,158674,158304,0.998389
+monday,BENIGN,529918,221687,15590,0.418342
+thursday,BENIGN,456752,194250,54556,0.425285
+thursday,Infiltration,36,36,29,1.000000
+thursday,Web Attack - Brute Force,1507,1442,0,0.956868
+thursday,Web Attack - SQL Injection,21,21,0,1.000000
+thursday,Web Attack - XSS,652,645,0,0.989264
+tuesday,BENIGN,432074,165125,13367,0.382168
+tuesday,FTP-Patator,7938,7921,11,0.997858
+tuesday,SSH-Patator,5897,5897,19,1.000000
+wednesday,BENIGN,440031,145854,11577,0.331463
+wednesday,DoS GoldenEye,10293,231,231,0.022442
+wednesday,DoS Hulk,231073,48976,150,0.211950
+wednesday,DoS Slowhttptest,5499,3916,3895,0.712129
+wednesday,DoS slowloris,5796,5153,5149,0.889061
+wednesday,Heartbleed,11,11,10,1.000000

@@ -1,0 +1,33 @@
+{
+  "rows": 1608937,
+  "train": 965361,
+  "val": 321788,
+  "test": 321788,
+  "classes": [
+    "Benign",
+    "Infilteration",
+    "DoS attacks-Slowloris",
+    "DoS attacks-GoldenEye",
+    "FTP-BruteForce",
+    "DoS attacks-SlowHTTPTest",
+    "Brute Force -Web"
+  ],
+  "n_features": 78,
+  "affected_rows_total": 161605,
+  "affected_rows_test": 65006,
+  "global_noise_rate": 0.10044209313354097,
+  "hidden_attack_rows": 12436,
+  "split": {
+    "method": "StratifiedGroupKFold on the clean label, groups = exact 78-feature vector",
+    "n_splits": 5,
+    "test_fold": 0,
+    "val_fold": 1,
+    "seed": 2026
+  },
+  "subsample": {
+    "fraction": 0.4,
+    "seed": 2026
+  },
+  "separability_limited": [],
+  "minutes": 11.666614167766722
+}

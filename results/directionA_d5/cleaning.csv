@@ -1,0 +1,3 @@
+dataset,labelled_rows,flagged_by_cl,evidence_rows,evidence_removed,false_evidence_rows,false_evidence_removed,true_evidence_rows,true_evidence_removed,host_days_with_evidence,host_days_exposed
+cicids2017,2830743,666,557646,485,4684,0.002562,356323,0.001243,21,21
+cicids2018,4022342,111251,406238,105652,373505,0.282858,32733,0.000092,1876,1119

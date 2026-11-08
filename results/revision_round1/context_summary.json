@@ -1,0 +1,41 @@
+{
+  "cicids2018": {
+    "stage1": {
+      "omitted": 30817,
+      "omitted_tier_A": 26749,
+      "omitted_tier_B": 4068,
+      "omitted_tier_B_non_unanimous_addresses": 0,
+      "cleaned_rule_false_flags": 17723
+    },
+    "K": {
+      "omitted": 30827,
+      "omitted_tier_A": 26759,
+      "omitted_tier_B": 4068,
+      "omitted_tier_B_non_unanimous_addresses": 0,
+      "cleaned_rule_false_flags": 17723
+    },
+    "tier_B_rows": 460518,
+    "tier_B_non_unanimous_addresses": 4177,
+    "host_172_31_69_24_benign_labeled_by_corrected": {
+      "Infiltration - NMAP Portscan": 24615,
+      "BENIGN": 5272,
+      "Infiltration - Communication Victim Attacker": 22,
+      "Infiltration - Dropbox Download": 12,
+      "Infiltration - Dropbox Download - Attempted": 6
+    },
+    "omitted_28feb_by_source_host": {
+      "172.31.69.24": 24649
+    }
+  },
+  "cicids2017": {
+    "stage1": {
+      "omitted_tier1": 43652,
+      "omitted_all": 89717
+    },
+    "K": {
+      "omitted_tier1": 43849,
+      "omitted_all": 89914
+    }
+  },
+  "minutes": 7.008289603050798
+}
