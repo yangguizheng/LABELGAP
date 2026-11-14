@@ -20,7 +20,7 @@ import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 import torch  # noqa: E402
 
-from src.utils import md_table  # noqa: E402
+from build_failure_report import md_table  # noqa: E402
 from directionA_prepare import load_original  # noqa: E402
 from src.analysis.diagnostics import knn_label_counts  # noqa: E402
 from src.utils import git_commit, load_yaml, save_json  # noqa: E402
@@ -136,7 +136,7 @@ def main() -> None:
     parsed = float(ts.notna().mean())
 
     # "Attempted" flag for tier-1 matches (Liu labels), via the nids_audit loaders
-    sys.path.insert(0, str(ROOT / "alignment_cicids2017"))
+    sys.path.insert(0, ca["dataset"]["mask_code_dir"])
     diff = import_module("10_label_diff")
     liu = diff.load_version(str(Path(ca["dataset"]["original_parquet_dir"]).parent / "liu"), diff.LIU_DAY_FILES, "liu")
     key = ["day", "Flow ID", "dur", "occ"]
@@ -173,15 +173,15 @@ def main() -> None:
     # ---- report ---------------------------------------------------------------------------------
     L = []
     w = L.append
-    w("# DIRECTION A — 诊断 A-D2：被系统性漏标的攻击在哪里（特征空间与时间/主机上下文）\n")
-    w(f"> 研究者 2026-09-25 选定。生成时间 {time.strftime('%Y-%m-%d %H:%M')}；代码 commit `{git_commit()[:7]}`。"
-      "判读标准 `configs/direction_a_d2_mechanism.yaml` 在计算前提交。只做计算，不训练模型。\n")
+    w("# DIRECTION A - Diagnosis A-D2: Where are the systematically missed attacks (feature space and time/host context) \n")
+    w(f">Researcher selected on 2026-09-25. Generation time{time.strftime('%Y-%m-%d %H:%M')};Code commit `{git_commit()[:7]}`."
+      "The interpretation standard `configs/direction_a_d2_mechanism.yaml` is submitted before calculation. It only performs calculations and does not train the model. \n")
     interp = ROOT / "reports/direction_a_d2_interpretation.md"
     if interp.exists():
         w(interp.read_text().strip() + "\n")
-    w("## D2-a　特征空间位置（训练集，预处理后的 77 维特征，欧氏距离）\n")
-    w("r = 到同类已正确标注攻击的最近距离 / 到真正正常流量的最近距离；r < 1 表示更靠近同类攻击。"
-      f"近邻构成为 {k} 个最近训练样本中各类所占比例（不含自身）。“已标注攻击（对照）”为同类已正确标注行的随机样本。\n")
+    w("## D2-a Feature space position (training set, preprocessed 77-dimensional feature, Euclidean distance) \n")
+    w("r = the closest distance to a correctly labeled attack of the same type / the closest distance to real normal traffic; r < 1 means closer to a similar attack."
+      f"The nearest neighbors are{k}The proportion of each type in the most recent training samples (excluding itself). \"Labeled Attack (Control)\" is a random sample of correctly labeled rows of the same type. \n")
     t = feat[["class", "hidden_train", "hidden_median_ratio", "hidden_share_ratio_lt_1", "labelled_median_ratio",
               "hidden_median_d_labelled_c", "hidden_median_d_benign", "hidden_median_d_hidden",
               "hidden_mean_share_labelled_c", "hidden_mean_share_benign", "hidden_mean_share_hidden",
@@ -191,10 +191,10 @@ def main() -> None:
                  "Nbr share: labelled c", "Nbr share: benign", "Nbr share: hidden",
                  "Proximity signal", "Self-cluster"]
     w(md_table(t))
-    w("\n## D2-b　时间与主机上下文（全部覆盖行）\n")
-    w(f"时间戳解析成功率 {parsed:.1%}（原始文件为 12 小时制且无 AM/PM，8 点以前的小时加 12）。"
-      "co-occurrence = 漏标行所在的（星期, 60 分钟时段）里同时存在同类已标注攻击的比例。"
-      "Attempted = Liu 等人标为“未遂”的比例（仅精确匹配的 tier-1 行）。\n")
+    w("\n## D2-b Time and host context (all overlay lines) \n")
+    w(f"Timestamp parsing success rate{parsed:.1%}(Original file is in 12 hour format with no AM/PM, hours before 8 o'clock plus 12)."
+      "co-occurrence = the proportion of marked attacks of the same type that exist in the (week, 60-minute period) where the missing row is located."
+      "Attempted = Proportion labeled \"attempted\" by Liu et al. (only tier-1 rows with exact matches). \n")
     t = ctx[["class", "hidden_all", "days", "hidden_time_span", "labelled_time_span", "top3_src_share", "top_src",
              "top3_dst_share", "densest_60min_share", "co_occurrence", "attempted_share_tier1",
              "host_concentration", "time_concentration", "within_campaign"]].copy()
@@ -204,11 +204,11 @@ def main() -> None:
     w(md_table(t))
     rb = out / "label_robustness_summary.csv"
     if rb.exists():
-        w("\n## D2-c　【事后分析，非预注册】修正标签的可靠性与第一阶段结论的稳健性\n")
-        w("D2-b 显示：除 Infiltration 端口扫描外，被漏标行的修正标签几乎都来自 tier-2（按 (星期, 流 ID) 推断），"
-          "而 tier-1 的被漏标 Bot 行全部被 Liu 标为“未遂”。因此用第一阶段已保存的预测（不重新训练）在两个更可靠的"
-          "子集上重算：R1 = 只看 tier-1（精确匹配）测试行；R2 = R1 且把“未遂”流量按数据集作者建议改算 BENIGN。"
-          "数值为 5 个模型 × 3 个种子的均值（`scripts/directionA_d2_label_robustness.py`）。\n")
+        w("\n## D2-c [Post-analysis, non-pre-registration] Reliability of revised labels and robustness of first-stage conclusions \n")
+        w("D2-b shows: Except for the Infiltration port scan, the correction labels of the missed rows are almost all from tier-2 (inferred by (week, flow ID)),"
+          "All the missed Bot rows in tier-1 were marked as \"attempted\" by Liu. Therefore the saved predictions from the first stage (without retraining) are used in the two more reliable"
+          "Recalculate on the subset: R1 = only look at tier-1 (exact match) test rows; R2 = R1 and change the \"attempted\" traffic to BENIGN as recommended by the data set author."
+          "The value is the mean of 5 models × 3 seeds (`scripts/directionA_d2_label_robustness.py`). \n")
         s = pd.read_csv(rb, header=[0, 1], index_col=[0, 1])
         t = []
         for (variant, cond), r in s.iterrows():
@@ -221,12 +221,12 @@ def main() -> None:
                       "BENIGN false alarm": r[("benign_false_alarm", "mean")]})
         w(md_table(pd.DataFrame(t)))
         bc = pd.read_csv(out / "label_robustness_hidden_by_class.csv")
-        w("\n*各子集中被漏标攻击按类别的数量（测试集）：*\n")
+        w("\n*The number of missed attacks by category in each subset (test set):*\n")
         w(md_table(bc.rename(columns={"variant": "Evaluation subset"}), nd=0))
-    w("\n## 文件\n")
-    w("`results/directionA_d2/`：feature_space.csv、hidden_rows_feature_space.parquet（逐行距离与近邻构成）、"
-      "context.csv、label_robustness*.csv、summary.json。代码：`scripts/directionA_d2_mechanism.py`、"
-      "`scripts/directionA_d2_label_robustness.py`。")
+    w("\n## file \n")
+    w("`results/directionA_d2/`: feature_space.csv, hidden_rows_feature_space.parquet (consisting of row-by-row distance and nearest neighbor),"
+      "context.csv, label_robustness*.csv, summary.json. Code: `scripts/directionA_d2_mechanism.py`,"
+      "`scripts/directionA_d2_label_robustness.py`.")
     (ROOT / "reports/DIRECTION_A_D2.md").write_text("\n".join(L) + "\n")
     print(feat.to_string(index=False, float_format=lambda v: f"{v:.3f}"))
     print(ctx.drop(columns=["top_src", "top_dst"]).to_string(index=False, float_format=lambda v: f"{v:.3f}"))

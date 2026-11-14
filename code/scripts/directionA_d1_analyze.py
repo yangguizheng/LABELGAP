@@ -22,7 +22,7 @@ import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 from sklearn.metrics import f1_score  # noqa: E402
 
-from src.utils import md_table  # noqa: E402
+from build_failure_report import md_table  # noqa: E402
 from src.utils import MODEL_DISPLAY, git_commit, load_yaml  # noqa: E402
 
 METHODS = [  # (label, sub-directory under --runs, is_reference)
@@ -122,18 +122,18 @@ def main() -> None:
     # ---- report ------------------------------------------------------------------------------------
     L = []
     w = L.append
-    w(f"# DIRECTION A — 诊断 A-D1（{args.title}）：现成抗噪方法能否在没有干净标签时找回被漏标的攻击\n")
-    w(f"> 生成时间 {time.strftime('%Y-%m-%d %H:%M')}；代码 commit `{git_commit()[:7]}`。设计与判读标准 "
-      "`configs/direction_a_d1_noise_robust.yaml`（2018 另见 `configs/direction_a2018_d1.yaml`）在运行前提交。"
-      "训练和验证只用原版（带错）标签；修正标签只用于测试评估和给 Confident Learning 的查错结果打分。"
-      "第一阶段同种子的 CE（带错标签）与修正标签上限作为对照，不重新训练。\n")
+    w(f"# DIRECTION A — Diagnostics A-D1 ({args.title}): Can off-the-shelf anti-noise methods recover missed attacks when there are no clean labels? \n")
+    w(f">Generation time{time.strftime('%Y-%m-%d %H:%M')};Code commit `{git_commit()[:7]}`. Design and interpretation standards"
+      "`configs/direction_a_d1_noise_robust.yaml` (2018 see also `configs/direction_a2018_d1.yaml`) is committed before running."
+      "Only the original (with errors) labels are used for training and verification; the corrected labels are only used for test evaluation and scoring of Confident Learning’s error checking results."
+      "In the first stage, the CE (with wrong label) of the same seed and the upper limit of the corrected label are used as a comparison without retraining. \n")
     interp = ROOT / args.interp
     if interp.exists():
         w(interp.read_text().strip() + "\n")
-    w(f"## D1-a　找回率与连带损失（测试集，{len(cfg['seeds'])} 个种子 mean ± std）\n")
-    w(f"找回率 = 被错标的测试行（{int(aff.sum()):,} 条）中预测为真实（修正）类别的比例；"
-      f"被漏标攻击 = 原版标正常、修正为攻击的测试行（{int(hidden.sum()):,} 条）。"
-      f"**判定使用：{'全部被错标行' if args.primary == 'all' else '被漏标攻击'}**。\n")
+    w(f"## D1-a Recovery and collateral effects (test set, mean ± standard deviation over {len(cfg['seeds'])} seeds)\n")
+    w(f"Recovery is the share of mislabeled test flows ({int(aff.sum()):,}) predicted as their corrected class. "
+      f"Omitted attacks are flows labeled benign in the original release but attack in the corrected release ({int(hidden.sum()):,} flows). "
+      f"**Primary criterion: {'all mislabeled flows' if args.primary == 'all' else 'omitted attacks'}**.\n")
     t = []
     for (label, m), g in df.groupby(["method", "model"], sort=False):
         row = {"Method": label, "Model": MODEL_DISPLAY[m], "Recovery (all affected)": pm(g["recovery"])}
@@ -147,35 +147,35 @@ def main() -> None:
                     "Macro-F1 (clean test)": pm(g["macro_f1_clean"])})
         t.append(row)
     w(md_table(pd.DataFrame(t)))
-    w("\n## D1-b　判读（预注册）\n")
+    w("\n## D1-b Interpretation (pre-registration) \n")
     rr = v["recovered"]
-    w(f"recovered：找回率 ≥ {rr['min_recovery']}，且未错标行准确率 ≥ {rr['min_unaffected_accuracy']}、正常流量误报率 ≤ "
-      f"{rr['max_benign_false_alarm']}；partial：找回率 ≥ {v['partial']['min_recovery']}；其余 fails。"
-      f"**方向判定：{direction}**。\n")
+    w(f"recovered: recovery rate ≥{rr['min_recovery']}, and the accuracy of not mismarking rows is ≥{rr['min_unaffected_accuracy']}, normal traffic false alarm rate ≤"
+      f"{rr['max_benign_false_alarm']};partial: retrieval rate ≥{v['partial']['min_recovery']};The rest fails."
+      f"**Direction determination:{direction}**.\n")
     vv = verdicts.copy()
     vv["model"] = vv["model"].map(MODEL_DISPLAY)
     w(md_table(vv.rename(columns={"method": "Method", "model": "Model", "recovery": "Recovery (verdict rows)",
                                   "unaffected_acc": "Unaffected acc.", "benign_false_alarm": "Benign FAR",
                                   "verdict": "Verdict"})))
-    w("\n## D1-c　按类别的找回率（被错标行中预测为真实类别的比例，种子均值）\n")
+    w("\n## D1-c Retrieval rate by category (proportion of mislabeled rows predicted to be true categories, seed mean) \n")
     t = pd.DataFrame({"Method": [a for a, _ in summ.index], "Model": [MODEL_DISPLAY[b] for _, b in summ.index]})
     for c in args.focus:
         t[c] = summ[f"recovery_{c}"].to_numpy()
     w(md_table(t))
     cl = out / "cl_detection.csv"
     if cl.exists():
-        w("\n## D1-d　Confident Learning 的查错质量（训练集；修正标签仅用于打分）\n")
+        w("\n## D1-d Error checking quality of Confident Learning (training set; correction labels are only used for scoring) \n")
         c = pd.read_csv(cl)
         base = ["seed", "flagged", "true_affected", "true_positives", "precision", "recall"]
         w(md_table(c[base].rename(columns={"seed": "Seed", "flagged": "Flagged rows", "true_affected": "True affected",
                                            "true_positives": "Correctly flagged", "precision": "Precision",
                                            "recall": "Recall"})))
         hid = [k for k in c.columns if k.startswith("recall_hidden_")]
-        w("\n*各类被错标行被 CL 标出的比例（按修正类别，种子均值）：* " +
-          "；".join(f"{k.replace('recall_hidden_', '')} {c[k].mean():.1%}" for k in hid))
+        w("\n*The proportion of various types of wrongly marked rows marked by CL (by correction category, mean seed value):*" +
+          ";".join(f"{k.replace('recall_hidden_', '')} {c[k].mean():.1%}" for k in hid))
         ff = [k for k in c.columns if k.startswith("false_flags_labelled_")]
-        w("\n*误标出的行（本来标签就对）按原标签分布（种子均值）：* " +
-          "；".join(f"{k.replace('false_flags_labelled_', '')} {c[k].mean():,.0f}" for k in ff
+        w("\n* Mislabeled rows (the original labels are correct) are distributed according to the original labels (seed mean): *" +
+          ";".join(f"{k.replace('false_flags_labelled_', '')} {c[k].mean():,.0f}" for k in ff
                    if c[k].mean() >= 1))
     mon = []
     for label, sub, ref in METHODS:
@@ -197,8 +197,8 @@ def main() -> None:
     if mon:
         mon = pd.DataFrame(mon)
         mon.to_csv(out / "monitoring_val_recovery.csv", index=False, float_format="%.6f")
-        w("\n## D1-e　训练过程中验证集的找回率（仅观察，不用于选模）\n")
-        w("每一轮用修正标签计算验证集中被错标行（两个方向都包括）的找回率；“最高值”≥ 0.5 记为存在早期学习信号。\n")
+        w("\n## D1-e Retrieval rate of the validation set during training (only observation, not used for model selection) \n")
+        w("In each round, the correction labels are used to calculate the retrieval rate of mislabeled rows (in both directions) in the validation set; \"highest value\" ≥ 0.5 is recorded as the presence of early learning signals. \n")
         t = []
         for (label, m), g in mon.groupby(["method", "model"], sort=False):
             t.append({"Method": label, "Model": MODEL_DISPLAY[m],
@@ -207,10 +207,10 @@ def main() -> None:
                       "Last epoch": pm(g["last_val_recovery"]),
                       "Early-learning signal": bool((g["max_val_recovery"] >= 0.5).mean() >= 0.5)})
         w(md_table(pd.DataFrame(t)))
-    w("\n## 文件\n")
-    w(f"`{args.out}/`：recovery_per_run.csv、recovery_summary.csv、verdicts.csv、cl_detection.csv、"
-      f"cl_issues_seed*.npy。运行结果：`{args.runs}/d1_{{gce,coteaching,cl}}/`。代码：`src/training/noise_robust.py`、"
-      "`scripts/directionA_d1_cl.py`、`scripts/directionA_d1_analyze.py`。")
+    w("\n## file \n")
+    w(f"`{args.out}/`:recovery_per_run.csv、recovery_summary.csv、verdicts.csv、cl_detection.csv、"
+      f"cl_issues_seed*.npy. Running result: `{args.runs}/d1_{{gce,coteaching,cl}}/`. Code: `src/training/noise_robust.py`,"
+      "`scripts/directionA_d1_cl.py`、`scripts/directionA_d1_analyze.py`.")
     (ROOT / args.report).write_text("\n".join(L) + "\n")
     print(pd.DataFrame(verdicts).to_string(index=False, float_format=lambda x: f"{x:.3f}"))
     print("direction verdict:", direction)

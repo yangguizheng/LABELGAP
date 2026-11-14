@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Direction A, CSE-CIC-IDS2018: attempted-flow convention sensitivity -- analysis.
+"""Direction A, CSE-CIC-IDS2018: attempted-flow convention sensitivity -- analysis (ARS review, R2).
 
 Scores three conventions on one footing (same metric code for all of them):
   orig  Stage-I convention (attempted -> Benign): runs directionA2018/{noisy,clean}
@@ -28,7 +28,7 @@ CONDS = ("noisy", "clean")
 RUNS = {"orig": {"noisy": "directionA2018/noisy", "clean": "directionA2018/clean"},
         "K": {"noisy": "directionA2018/noisy", "clean": "directionA2018_attK/clean"},
         "E": {"noisy": "directionA2018_attE/noisy", "clean": "directionA2018_attE/clean"}}
-LABEL = {"orig": "Stage I（未遂→正常）", "K": "K（未遂保留攻击类别，同 2017）", "E": "E（剔除未遂流量）"}
+LABEL = {"orig": "Stage I (attempt → normal)", "K": "K (attempted attack category reserved, same as 2017)", "E": "E (exclude attempted traffic)"}
 
 
 def md_table(df: pd.DataFrame, nd: int = 3) -> str:
@@ -180,71 +180,71 @@ def main() -> None:
     vs = load_json(out / "variants_summary.json")
     L = []
     w = L.append
-    w("# DIRECTION A（CSE-CIC-IDS2018）— 未遂流量处理方式的敏感性\n")
-    w(f"> 生成时间 {time.strftime('%Y-%m-%d %H:%M')}；代码 commit `{git_commit()[:7]}`。判读规则 "
-      "`configs/direction_a2018_attempted.yaml` 在构建变体和训练之前提交。Stage I 把修正版中所有“未遂”流量映射为正常；"
-      "CIC-IDS2017 则保留未遂流量的攻击类别。本分析在同一批行、同一划分、同一预处理与训练协议下比较三种约定："
-      "Stage I、K（与 2017 一致，主结果）、E（剔除未遂流量，辅助）。K 只重训修正标签组（原版标签组的行与标签与 Stage I 完全相同，"
-      "直接用 Stage I 预测按 K 的测试标签重新计分）；E 两组都重训。5 个模型 × 3 个种子。\n")
+    w("# DIRECTION A (CSE-CIC-IDS2018) - Sensitivity of Attempted Traffic Handling (ARS Review R2) \n")
+    w(f">Generated at {time.strftime('%Y-%m-%d %H:%M')}; code commit `{git_commit()[:7]}`. Interpretation rules "
+      "`configs/direction_a2018_attempted.yaml` is submitted before building variants and training. Stage I maps all “attempted” traffic in the revised version to normal;"
+      "CIC-IDS2017 retains the attack category of attempted traffic. This analysis compares three conventions under the same batch of rows, the same partitioning, and the same preprocessing and training protocol:"
+      "Stage I, K (consistent with 2017, main result), E (removing attempted traffic, auxiliary). K only retrains the corrected label group (the rows and labels of the original label group are exactly the same as Stage I,"
+      "Directly use Stage I to predict and rescore according to the test label of K); both groups of E are retrained. 5 models × 3 seeds. \n")
     for a in rules.get("amendments", []):
-        w(f"> 补充说明（{a['date']}）：{a['what']}\n")
-    w("## 判定\n")
-    w(f"- **Q1（K 上排名反转是否复现）**：`{verdicts['Q1_inversion_K']}`")
-    w(f"- **Q2（K 上反转由哪类错误驱动）**：`{verdicts['Q2_driver_K']}`")
-    w(f"- **Q3（E 上排名反转是否复现）**：`{verdicts['Q3_inversion_E']}`")
-    w(f"- 参照：Stage I 约定下 `{verdicts['reference_inversion_orig']}`")
-    w(f"- 合理性检查（K、E 中修正标签训练的漏标找回率 ≥ 0.80 的模型 ≥ 3 个）：{'通过' if verdicts['sanity_pass'] else '**未通过**'}\n")
-    w("## 1　三种约定下的测试集\n")
-    w(f"未遂流量共 {vs['attempted_rows']:,} 行（测试集 {vs['attempted_by_split']['test']:,} 行）。")
+        w(f"> Supplementary instructions ({a['date']}):{a['what']}\n")
+    w("## Determine \n")
+    w(f"- **Q1 (Whether the ranking reversal on K is repeated)**:`{verdicts['Q1_inversion_K']}`")
+    w(f"- **Q2 (Which type of error drives the reversal on K)**: `{verdicts['Q2_driver_K']}`")
+    w(f"- **Q3 (Whether the ranking reversal on E is repeated)**:`{verdicts['Q3_inversion_E']}`")
+    w(f"- Reference under the Stage I convention: `{verdicts['reference_inversion_orig']}`")
+    w(f"- Reasonability check (the missing label retrieval rate of corrected label training in K and E is ≥ 3 models ≥ 0.80):{'pass' if verdicts['sanity_pass'] else '**Failed**'}\n")
+    w("## 1 Test set \n under three conventions")
+    w(f"Attempted flows: {vs['attempted_rows']:,} in total ({vs['attempted_by_split']['test']:,} in the test set).")
     for v in ("K", "E"):
-        w(f"{v}：测试集 {vs[v]['rows']['test']:,} 行，两版标签不一致 {vs[v]['disagreeing_rows']['test']:,} 行；"
-          f"修正版测试标签中出现的类别：{', '.join(vs[v]['clean_classes_with_test_rows'])}。")
-    w("两版标签的对应关系见 `variants_K_transitions.csv`、`variants_E_transitions.csv`。\n")
-    w("## 2　总体结果（3 个种子 mean ± std）\n")
+        w(f"{v}: {vs[v]['rows']['test']:,} test flows, including {vs[v]['disagreeing_rows']['test']:,} label disagreements; "
+          f"classes present under the corrected test labels: {', '.join(vs[v]['clean_classes_with_test_rows'])}.")
+    w("The corresponding relationship between the two versions of labels is shown in `variants_K_transitions.csv` and `variants_E_transitions.csv`. \n")
+    w("## 2 Overall results (3 seeds mean ± std) \n")
     tab = []
     for conv in RUNS:
         for cond in CONDS:
             for m in models:
                 q = ov[(ov["conv"] == conv) & (ov["cond"] == cond) & (ov["model"] == m)]
-                tab.append({"约定": LABEL[conv], "训练标签": cond, "模型": MODEL_DISPLAY[m],
-                            "Macro-F1（修正测试标签）": pm(q["macro_f1_corrected"]),
-                            "Macro-F1（原版测试标签）": pm(q["macro_f1_original"]),
-                            "Macro-F1（原版，共同类别）": pm(q["macro_f1_original_fixed"]),
-                            "误报率（修正版正常流量）": pm(q["false_alarm"]),
-                            "漏标找回率": pm(q["recovery"])})
+                tab.append({"Convention": LABEL[conv], "training label": cond, "Model": MODEL_DISPLAY[m],
+                            "Macro-F1 (fix test label)": pm(q["macro_f1_corrected"]),
+                            "Macro-F1 (original test label)": pm(q["macro_f1_original"]),
+                            "Macro-F1 (original, common category)": pm(q["macro_f1_original_fixed"]),
+                            "False alarm rate (corrected version of normal traffic)": pm(q["false_alarm"]),
+                            "Omitted-attack recovery": pm(q["recovery"])})
     w(md_table(pd.DataFrame(tab)))
-    w("\n## 3　Q1 / Q3：按原版测试标签评估时的排名反转\n")
-    w("每个模型取 3 个种子的均值；修正标签训练 < 原版标签训练即记为反转。\n")
-    show = inv.assign(约定=inv["conv"].map(LABEL), 模型=inv["model"].map(MODEL_DISPLAY))[
-        ["约定", "模型", "noisy_trained", "clean_trained", "gap", "inverts"]].rename(columns={
-            "noisy_trained": "原版标签训练", "clean_trained": "修正标签训练", "gap": "差值", "inverts": "反转"})
+    w("\n## 3 Q1/Q3: Ranking reversal \n when evaluated by the original test label")
+    w("Each model takes the average of 3 seeds; modified label training < original label training is recorded as inversion. \n")
+    show = inv.assign(Convention=inv["conv"].map(LABEL), Model=inv["model"].map(MODEL_DISPLAY))[
+        ["Convention", "Model", "noisy_trained", "clean_trained", "gap", "inverts"]].rename(columns={
+            "noisy_trained": "Original-label training", "clean_trained": "Corrected-label training", "gap": "Difference", "inverts": "Reversal"})
     w(md_table(show))
-    w("\n## 4　Q2：Macro-F1 差值按类别分解（原版测试标签）\n")
-    w("类别 k 的贡献 =（原版训练 F1_k − 修正训练 F1_k）/ 原版测试标签中出现的类别数，各类贡献之和等于 Macro-F1 差值。"
-      "分组：infiltration = Benign + Infilteration；attack_type = FTP-BruteForce + DoS attacks-SlowHTTPTest；其余为 other。\n")
+    w("\n## 4 Q2: Macro-F1 difference broken down by category (original test label) \n")
+    w("Contribution of category k = (original training F1_k − modified training F1_k) / number of categories appearing in the original test label. The sum of all types of contributions is equal to the Macro-F1 difference."
+      "Grouping: infiltration = Benign + Infiltration; attack_type = FTP-BruteForce + DoS attacks-SlowHTTPTest; the rest are other. \n")
     cols = ["conv", "model", "gap", "contrib_infiltration", "contrib_attack_type", "contrib_other",
             "share_infiltration", "share_attack_type", "share_other"]
     w(md_table(dec[cols].assign(conv=dec["conv"].map(LABEL), model=dec["model"].map(MODEL_DISPLAY))))
-    w("\n逐类贡献见 `gap_decomposition.csv`，逐类 F1 见 `per_class_f1_per_run.csv`。\n")
-    w("## 5　Q4：Stage I 的误报从哪里来（原版标签训练的模型）\n")
+    w("See `gap_decomposition.csv` for class-by-class contributions of \n, and `per_class_f1_per_run.csv` for class-by-class F1 contributions. \n")
+    w("## 5 Q4: Where do the false positives of Stage I come from (original label trained model) \n")
     q4m = q4.groupby(["model", "group"]).mean(numeric_only=True).reset_index()
     w(md_table(q4m.assign(model=q4m["model"].map(MODEL_DISPLAY))[
         ["model", "group", "n", "false_alarm_rate", "share_of_all_false_alarms", "overall_rate"]]))
-    w("\n## 6　合理性检查\n")
+    w("\n## 6 Reasonability check \n")
     for conv in ("K", "E"):
-        w(f"- {LABEL[conv]}：修正标签训练的漏标找回率 " + ", ".join(
+        w(f"- {LABEL[conv]}: Correct the missing label retrieval rate of label training" + ", ".join(
             f"{MODEL_DISPLAY[m]} {v:.3f}" for m, v in sanity[conv]["clean_trained_recovery"].items())
-          + f"；{'通过' if sanity[conv]['passes'] else '未通过'}")
-    w("\n## 7　预先写定的解读\n")
+          + f";{'pass' if sanity[conv]['passes'] else 'failed'}")
+    w("\n## 7 Pre-written interpretation \n")
     for s in rules["interpretation_fixed_in_advance"]:
         w(f"- {s}")
-    w("\n## 文件\n")
-    w(f"`{rules['outputs']['results']}`：variants_summary.json、variants_*_transitions.csv、overall_per_run.csv、"
+    w("\n## file \n")
+    w(f"`{rules['outputs']['results']}`:variants_summary.json、variants_*_transitions.csv、overall_per_run.csv、"
       "per_class_f1_per_run.csv、inversion_per_model.csv、gap_decomposition.csv、"
-      "false_alarm_decomposition_per_run.csv、verdicts.json。运行结果：directionA2018_attK/clean、"
-      "directionA2018_attE/{noisy,clean}；原版标签组的 K 结果复用 directionA2018/noisy。"
-      "代码：scripts/directionA2018_attempted_variants.py、scripts/directionA2018_attempted_analyze.py、"
-      "scripts/run_directionA2018_attempted.sh。")
+      "false_alarm_decomposition_per_run.csv, verdicts.json. Running results: directionA2018_attK/clean,"
+      "directionA2018_attE/{noisy,clean}; the K result of the original label group reuses directionA2018/noisy."
+      "Code: scripts/directionA2018_attempted_variants.py, scripts/directionA2018_attempted_analyze.py,"
+      "scripts/run_directionA2018_attempted.sh.")
     (ROOT / rules["outputs"]["report"]).write_text("\n".join(L) + "\n")
     print(pd.DataFrame(tab).to_string(index=False))
     print(inv.to_string(index=False))

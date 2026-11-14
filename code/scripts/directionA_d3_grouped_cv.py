@@ -25,7 +25,7 @@ from cleanlab.filter import find_label_issues  # noqa: E402
 from sklearn.cluster import MiniBatchKMeans  # noqa: E402
 from sklearn.model_selection import StratifiedGroupKFold  # noqa: E402
 
-from src.utils import md_table  # noqa: E402
+from build_failure_report import md_table  # noqa: E402
 from src.utils import git_commit, load_yaml  # noqa: E402
 
 warnings.filterwarnings("ignore")
@@ -123,16 +123,16 @@ def main() -> None:
 
     L = []
     w = L.append
-    w("# DIRECTION A — 诊断 A-D3：整群留出的交叉验证能否让被漏标的攻击显形\n")
-    w(f"> 研究者 2026-09-26 选定。生成时间 {time.strftime('%Y-%m-%d %H:%M')}；代码 commit `{git_commit()[:7]}`。"
-      "判读标准 `configs/direction_a_d3_grouped_cv.yaml` 在计算前提交。只用原版（带错）标签；修正标签只用于打分。"
-      "exact 分组即标准 Confident Learning 的做法（基线）。\n")
+    w("# DIRECTION A — Diagnosis A-D3: Can cluster leave-out cross-validation expose missed attacks? \n")
+    w(f">Researcher selected on 2026-09-26. Generation time{time.strftime('%Y-%m-%d %H:%M')};Code commit `{git_commit()[:7]}`."
+      "The interpretation standard `configs/direction_a_d3_grouped_cv.yaml` is submitted before calculation. Only original (wrong) tags are used; corrected tags are only used for scoring."
+      "Exact grouping is what standard Confident Learning does (baseline). \n")
     interp = ROOT / "reports/direction_a_d3_interpretation.md"
     if interp.exists():
         w(interp.read_text().strip() + "\n")
-    w("## D3-a　各分组方式的查错效果（训练集）\n")
-    w(f"exposes ⇔ 被漏标攻击的查全率 ≥ {v['min_recall_hidden']} 且查准率 ≥ {v['min_precision']}。"
-      f"**判定：{verdict}**（在两个数据集上都 exposes 的分组：{', '.join(both.index[both]) or '无'}）。\n")
+    w("## D3-a Error checking effect of each grouping method (training set) \n")
+    w(f"Detection criterion: recall of omitted attacks ≥ {v['min_recall_hidden']} and precision ≥ {v['min_precision']}."
+      f"**determination:{verdict}**(Groups exposed on both datasets:{', '.join(both.index[both]) or 'none'}).\n")
     show = res[["dataset", "grouping", "n_groups", "largest_group_share", "flagged", "precision", "recall_hidden",
                 "recall_all_affected", "exposure_hidden", "exposure_true_class", "false_exposure_benign", "exposes"]]
     w(md_table(show.rename(columns={
@@ -143,10 +143,10 @@ def main() -> None:
         "exposes": "Exposes"})))
     per = [c for c in res.columns if c.startswith(("recall_hidden_", "exposure_true_"))]
     if per:
-        w("\n## D3-b　按类别（被漏标行数 ≥ 100 的类别）\n")
+        w("\n## D3-b By category (categories with missing rows ≥ 100) \n")
         w(md_table(res[["dataset", "grouping"] + per].rename(columns={"dataset": "Dataset", "grouping": "Grouping"})))
-    w("\n## 文件\n")
-    w("`results/directionA_d3/grouped_cv.csv`。代码：`scripts/directionA_d3_grouped_cv.py`。")
+    w("\n## file \n")
+    w("`results/directionA_d3/grouped_cv.csv`. Code: `scripts/directionA_d3_grouped_cv.py`.")
     (ROOT / "reports/DIRECTION_A_D3.md").write_text("\n".join(L) + "\n")
     print(res.drop(columns=per).to_string(index=False, float_format=lambda v_: f"{v_:.3f}"))
     print("verdict:", verdict, f"({(time.perf_counter() - t0) / 60:.1f} min)")

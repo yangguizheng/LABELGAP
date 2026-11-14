@@ -20,7 +20,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
-from src.utils import md_table  # noqa: E402
+from build_failure_report import md_table  # noqa: E402
 from directionA_2018_alignment import DAYS, LIU_COLS, NUM, key_hash, original, shifted  # noqa: E402
 from directionA_prepare import load_original  # noqa: E402
 from src.utils import git_commit, load_json, load_yaml, save_json  # noqa: E402
@@ -120,7 +120,7 @@ def cicids2017(cfg: dict) -> tuple[list, dict, dict]:
                           "dport": pd.to_numeric(orig["Destination Port"], errors="coerce").astype("Int64")})
     clean = mask["corrected_liu"].astype(object).to_numpy()
     tier = mask["tier_liu"].to_numpy()
-    sys.path.insert(0, str(ROOT / "alignment_cicids2017"))
+    sys.path.insert(0, ca["dataset"]["mask_code_dir"])
     diff = import_module("10_label_diff")
     liu = diff.load_version(str(Path(ca["dataset"]["original_parquet_dir"]).parent / "liu"), diff.LIU_DAY_FILES, "liu")
     key = ["day", "Flow ID", "dur", "occ"]
@@ -229,16 +229,16 @@ def main() -> None:
 
     L = []
     w = L.append
-    w("# DIRECTION A — 诊断 A-D4：主机/时间上下文能否找回被系统性漏标的攻击\n")
-    w(f"> 研究者 2026-09-26 选定。生成时间 {time.strftime('%Y-%m-%d %H:%M')}；代码 commit `{git_commit()[:7]}`。"
-      "判读标准 `configs/direction_a_d4_context.yaml` 在计算前提交。基于规则、不训练模型；规则只用原版标签、IP 与时间。\n")
+    w("# DIRECTION A - Diagnosis A-D4: Can the host/time context retrieve the systemically missed attack \n")
+    w(f">Researcher selected on 2026-09-26. Generation time{time.strftime('%Y-%m-%d %H:%M')};Code commit `{git_commit()[:7]}`."
+      "The interpretation standard `configs/direction_a_d4_context.yaml` is submitted before calculation. Based on rules, no model is trained; the rules only use original tags, IP and time. \n")
     interp = ROOT / "reports/direction_a_d4_interpretation.md"
     if interp.exists():
         w(interp.read_text().strip() + "\n")
-    w("## D4-a　规则效果\n")
-    w(f"V1 = 源主机在之前 T 分钟内是原版攻击流的目的主机；V2 = 源主机在之前 T 分钟内出现在原版攻击流中（源或目的）。"
-      f"候选 = 原版标为正常的流。signal ⇔ 查全率 ≥ {v['min_recall_hidden']} 且查准率 ≥ {v['min_precision']}（主子集）。"
-      f"**判定：{verdict}**。\n")
+    w("## D4-a Rule effect \n")
+    w(f"V1 = the source host was the destination host of the original attack flow within the previous T minutes; V2 = the source host was present in the original attack flow (source or destination) within the previous T minutes."
+      f"Candidates are flows originally labeled benign. The criterion is recall ≥ {v['min_recall_hidden']} and precision ≥ {v['min_precision']} on the primary subset."
+      f"**determination:{verdict}**.\n")
     base = ["dataset", "subset", "rule", "window_min", "candidates", "hidden", "flagged", "flagged_share_of_candidates",
             "precision", "recall_hidden"]
     w(md_table(res[base].rename(columns={
@@ -247,20 +247,20 @@ def main() -> None:
         "flagged_share_of_candidates": "Flagged share", "precision": "Precision", "recall_hidden": "Recall (hidden)"})))
     per = [c for c in res.columns if c.startswith("recall_") and c != "recall_hidden"]
     if per:
-        w("\n## D4-b　按类别的查全率（被漏标行数 ≥ 100）\n")
+        w("\n## D4-b Recall rate by category (number of missed rows ≥ 100) \n")
         w(md_table(res[["dataset", "subset", "rule", "window_min"] + per]))
-    w("\n## D4-c　拆解：V2、60 分钟、主子集（描述性，不参与判定）\n")
-    w("按天（false_flags = 被标记、但修正标签为正常或未遂的行）：\n")
+    w("\n## D4-c Teardown: V2, 60 minutes, main subset (descriptive, not involved in judgment) \n")
+    w("By day (false_flags = flagged flows whose corrected label is benign or attempted):\n")
     w(md_table(bd[0]))
-    w("\n被漏标攻击最集中的源主机。attack_flows_as_src / as_dst = 该主机当天在原版攻击流中作为源 / 目的出现的次数；"
-      "main_evidence_label = 这些原版攻击流中最多的标签；top_peer_as_src / top_peer_share = 该主机作为源的原版攻击流里"
-      "最常见的目的主机、其占比与最常见目的端口；evidence_confirmed_share = 该主机当天涉及的原版攻击流（有修正标签者）中，"
-      "修正标签也是攻击（非未遂）的比例。\n")
+    w("\n is the source host with the highest concentration of missing tag attacks. attack_flows_as_src / as_dst = The number of times this host appears as a source/destination in the original attack flow that day;"
+      "main_evidence_label = the label with the most in these original attack flows; top_peer_as_src / top_peer_share = the original attack flow where this host is the source"
+      "The most common destination host, its proportion and the most common destination port; evidence_confirmed_share = Among the original attack flows (those with correction tags) involved in the host that day,"
+      "The correction label is also the proportion of attacks (non-attempts). \n")
     w(md_table(bd[1]))
-    w("\n误报最集中的源主机（列含义同上）：\n")
+    w("\n The source host with the highest concentration of false positives (column meanings are the same as above): \n")
     w(md_table(bd[2]))
-    w("\n## 文件\n")
-    w("`results/directionA_d4/`：context_rules.csv、breakdown_*.csv、summary.json。代码：`scripts/directionA_d4_context.py`。")
+    w("\n## file \n")
+    w("`results/directionA_d4/`: context_rules.csv, breakdown_*.csv, summary.json. Code: `scripts/directionA_d4_context.py`.")
     (ROOT / "reports/DIRECTION_A_D4.md").write_text("\n".join(L) + "\n")
     print(res[base].to_string(index=False, float_format=lambda x: f"{x:.3f}"))
     print("verdict:", verdict, f"({(time.perf_counter() - t0) / 60:.1f} min)")

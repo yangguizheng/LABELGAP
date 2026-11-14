@@ -18,7 +18,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
-from src.utils import md_table  # noqa: E402
+from build_failure_report import md_table  # noqa: E402
 from src.utils import git_commit, load_yaml, save_json  # noqa: E402
 
 DAYS = ["Wednesday-14-02-2018", "Thursday-15-02-2018", "Friday-16-02-2018", "Tuesday-20-02-2018",
@@ -155,39 +155,39 @@ def main() -> None:
     # ---- report -----------------------------------------------------------------------------------
     L = []
     w = L.append
-    w("# DIRECTION A — 第二数据集：CSE-CIC-IDS2018 原版与 Liu 修正版的对齐可行性\n")
-    w(f"> 研究者 2026-09-26 选定。生成时间 {time.strftime('%Y-%m-%d %H:%M')}；代码 commit `{git_commit()[:7]}`。"
-      "判读标准 `configs/direction_a_2018_alignment.yaml` 在计算前提交。只做数据对齐，不训练模型。\n")
+    w("# DIRECTION A — Second data set: Alignment feasibility of CSE-CIC-IDS2018 original version and Liu’s revised version \n")
+    w(f">Protocol selected on 2026-09-26. Generated at {time.strftime('%Y-%m-%d %H:%M')}; code commit `{git_commit()[:7]}`. "
+      "The interpretation standard `configs/direction_a_2018_alignment.yaml` is submitted before calculation. It only performs data alignment and does not train the model. \n")
     interp = ROOT / "reports/direction_a_2018_interpretation.md"
     if interp.exists():
         w(interp.read_text().strip() + "\n")
-    w("## 2018-a　时间偏移\n")
-    w(f"在 Wednesday-14-02-2018 的 30 万行原版样本上搜索整小时偏移：最佳为 **{hours:+d} 小时（修正版时间"
-      f"{'截断' if mode == 'floor' else '四舍五入'}到秒）**，样本精确匹配率 {best['match_rate']:.1%}。"
-      "完整曲线见 `offset_search.csv`。\n")
+    w("## 2018-a Time offset \n")
+    w(f"An integer-hour offset was searched on 300,000 original rows from Wednesday-14-02-2018. The best offset is **{hours:+d} hours (corrected timestamps "
+      f"{'truncated' if mode == 'floor' else 'rounded'} to seconds)**, with an exact-match rate of {best['match_rate']:.1%}. "
+      "See `offset_search.csv` for the complete curve. \n")
     top = curve.sort_values("match_rate", ascending=False).head(5)
     w(md_table(top.rename(columns={"mode": "Rounding", "hours": "Offset (h)", "match_rate": "Sample match rate"})))
-    w("\n## 2018-b　逐日匹配覆盖率\n")
-    w("tier_A = 键在两个版本中都只出现一次；tier_B = 键重复但修正版标签与未遂状态一致；ambiguous = 修正版标签"
-      "不一致（排除）；coverage = (tier_A + tier_B) / 原版行数。\n")
+    w("\n## 2018-b Daily matching coverage \n")
+    w("tier_A = key appears only once in both versions; tier_B = key is duplicated but revised label matches attempted status; ambiguous = revised label"
+      "Inconsistent (excluded); coverage = (tier_A + tier_B) / number of original rows. \n")
     w(md_table(by_day, nd=3))
-    w(f"\n**总覆盖率 {coverage:.1%}**（F1 门槛 {f['F1_coverage']['min_share_of_original_rows_matched']:.0%}）。\n")
-    w("## 2018-c　已匹配行里的“被漏标攻击”（原版 Benign、修正版为攻击）\n")
+    w(f"\n **Total Coverage{coverage:.1%}**(F1 threshold{f['F1_coverage']['min_share_of_original_rows_matched']:.0%}).\n")
+    w("## 2018-c Omitted attacks among matched flows (original label Benign, corrected label attack)\n")
     if len(hidden):
         hs_ = hidden.sort_values("rows", ascending=False)
         w(md_table(hs_.rename(columns={"day": "Day", "corrected_label": "Corrected label", "attempted": "Attempted",
                                        "rows": "Matched rows", "tier_A_share": "Tier-A share"}), nd=3))
     else:
-        w("已匹配行中没有此类转移。\n")
-    w(f"\n满足 F2 的“事件”（同一天、同一修正类别、非未遂、≥ {f['F2_hidden_episodes']['min_rows_per_episode']} 行）："
-      f"**{len(episodes)} 个**（门槛 {f['F2_hidden_episodes']['min_episodes']} 个）。**可行性判定：{verdict}**。\n")
-    w("## 2018-d　已匹配行的标签转移（按行数前 25）\n")
+        w("There is no such transfer in the matched row. \n")
+    w(f"\nEpisodes meeting F2 (same day and corrected class, not attempted, at least {f['F2_hidden_episodes']['min_rows_per_episode']} flows): "
+      f"**{len(episodes)}** (threshold {f['F2_hidden_episodes']['min_episodes']} episodes). **Feasibility verdict: {verdict}**.\n")
+    w("## 2018-d Label transfer of matched rows (top 25 rows) \n")
     tt = trans.groupby(["orig", "liu", "attempted"])["n"].sum().sort_values(ascending=False).head(25).reset_index()
     w(md_table(tt.rename(columns={"orig": "Original label", "liu": "Corrected label", "attempted": "Attempted",
                                   "n": "Rows"}), nd=0))
-    w("\n## 文件\n")
-    w("`results/directionA_2018/`：offset_search.csv、alignment_by_day.csv、label_transitions.csv、"
-      "hidden_episodes.csv、summary.json。代码：`scripts/directionA_2018_alignment.py`。")
+    w("\n## file \n")
+    w("`results/directionA_2018/`:offset_search.csv、alignment_by_day.csv、label_transitions.csv、"
+      "hidden_episodes.csv, summary.json. Code: `scripts/directionA_2018_alignment.py`.")
     (ROOT / "reports/DIRECTION_A_2018_ALIGNMENT.md").write_text("\n".join(L) + "\n")
     print(by_day.to_string(index=False))
     print(hidden.sort_values("rows", ascending=False).head(20).to_string(index=False) if len(hidden) else "no hidden")

@@ -26,7 +26,7 @@ import xgboost as xgb  # noqa: E402
 from cleanlab.filter import find_label_issues  # noqa: E402
 from sklearn.model_selection import StratifiedGroupKFold  # noqa: E402
 
-from src.utils import md_table  # noqa: E402
+from build_failure_report import md_table  # noqa: E402
 from directionA2018_prepare import DROP as DROP18  # noqa: E402
 from directionA_2018_alignment import DAYS, LIU_COLS, NUM, ORIG_COLS, ORIG_FILE, key_hash, shifted  # noqa: E402
 from directionA_d4_context import flag, score  # noqa: E402
@@ -50,7 +50,7 @@ def data2017() -> dict:
                           "dst": orig["Destination IP"].astype(str).str.strip(), "day": orig["day"].to_numpy()})
     clean = mask["corrected_liu"].astype(object).to_numpy()
     tier = mask["tier_liu"].to_numpy()
-    sys.path.insert(0, str(ROOT / "alignment_cicids2017"))
+    sys.path.insert(0, ca["dataset"]["mask_code_dir"])
     diff = import_module("10_label_diff")
     liu = diff.load_version(str(Path(ca["dataset"]["original_parquet_dir"]).parent / "liu"), diff.LIU_DAY_FILES, "liu")
     key = ["day", "Flow ID", "dur", "occ"]
@@ -295,39 +295,40 @@ def main() -> None:
 
     L = []
     w = L.append
-    w("# DIRECTION A — 诊断 A-D5：清洗攻击证据后，主机/时间上下文能否找回被系统性漏标的攻击\n")
-    w(f"> 研究者 2026-09-26 选定，方向 A 方法路线的最后一道关。生成时间 {time.strftime('%Y-%m-%d %H:%M')}；"
-      f"代码 commit `{git_commit()[:7]}`。判读标准 `configs/direction_a_d5_evidence_cleaning.yaml` 在计算前提交。"
-      "清洗只用原版标签与流特征；修正标签只用于打分。\n")
+    w("# DIRECTION A - Diagnosis A-D5: After cleaning the attack evidence, can the host/time context retrieve the systematically missed attack \n")
+    w(f">Researcher 2026-09-26 Selected, the last pass of the method route in direction A. Generation time{time.strftime('%Y-%m-%d %H:%M')};"
+      f"code commit `{git_commit()[:7]}`. Interpretation criteria `configs/direction_a_d5_evidence_cleaning.yaml` is submitted before calculation."
+      "Only original labels and flow features are used for cleaning; corrected labels are only used for scoring. \n")
     interp = ROOT / "reports/direction_a_d5_interpretation.md"
     if interp.exists():
         w(interp.read_text().strip() + "\n")
-    w("## D5-a　规则效果\n")
-    w(f"E2（主规则）= 当天原版攻击流至少 {min_share:.0%} 经得起清洗的主机才算暴露，其正常流在经清洗的证据之后 "
-      f"{win} 分钟内出现则标记；E1（消融）= 不要求暴露条件；V2_uncleaned（对照）= A-D4 的 V2；CL_only（对照）= "
-      f"Confident Learning 自己标出的原版正常行。signal ⇔ 查全率 ≥ {v['min_recall_hidden']} 且查准率 ≥ "
-      f"{v['min_precision']}（主子集）。**判定：{verdict}**（E2 各数据集：" +
-      "，".join(f"{k_} {'达标' if v_ else '未达标'}" for k_, v_ in prim.items()) + "）。\n")
+    w("## D5-a Rule effect \n")
+    w(f"E2 (main rule) treats a host as exposed when at least {min_share:.0%} of its original attack-labeled flows on that day survive evidence cleaning; "
+      f"it flags the host's benign-labeled flows occurring within {win} minutes after the cleaned evidence. "
+      f"E1 (ablation) omits the exposure condition; V2_uncleaned is the A-D4 control; CL_only flags original benign-labeled flows identified by Confident Learning. "
+      f"The criterion on the primary subset is recall ≥ {v['min_recall_hidden']} and precision ≥ {v['min_precision']}. "
+      f"**Verdict: {verdict}** (E2 by dataset: " +
+      ",".join(f"{k_} {'Meet the standard' if v_ else 'Not up to standard'}" for k_, v_ in prim.items()) + ").\n")
     w(md_table(res[base].rename(columns={
         "dataset": "Dataset", "subset": "Subset", "rule": "Rule", "candidates": "Benign-labelled rows",
         "hidden": "Hidden attacks", "flagged": "Flagged", "flagged_share_of_candidates": "Flagged share",
         "precision": "Precision", "recall_hidden": "Recall (hidden)", "signal": "Signal"})))
-    w("\n## D5-b　证据清洗效果\n")
-    w("false_evidence = 原版标为攻击、修正标签为正常或未遂的行；true_evidence = 两版都是攻击的行；"
-      "*_removed = 其中被 Confident Learning 标为可疑、不再作为证据的比例。host_days = 当天出现在原版攻击流中的"
-      "（天, 主机）组合数及其中被判为暴露的个数。\n")
+    w("\n## D5-b Evidence cleaning effect \n")
+    w("false_evidence = flows labeled attack originally but benign or attempted in the corrected labels; "
+      "true_evidence = flows labeled attack in both versions; *_removed = the share flagged as suspect by Confident Learning and excluded from evidence. "
+      "host_days counts (day, host) pairs appearing among original attack-labeled flows and the number classified as exposed.\n")
     w(md_table(cleaning))
-    w("\n## D5-c　A-D4 中的关键主机在清洗后是否仍被判为暴露\n")
-    w("hidden-attack host = A-D4 中被漏标攻击的来源主机（应暴露）；A-D4 false-flag host = A-D4 中误报最多的主机"
-      "（应不暴露）。surviving_share = 该主机当天原版攻击流中经得起清洗的比例。\n")
+    w("\n## D5-c | Whether the key hosts in A-D4 are still judged to be exposed after cleaning \n")
+    w("hidden-attack host = the source host in A-D4 that was attacked by false positives (should be exposed); A-D4 false-flag host = the host with the most false positives in A-D4"
+      "(Should not be exposed). surviving_share = The proportion of the host's original attack flow that can withstand cleaning that day. \n")
     w(md_table(keys))
-    w("\n## D5-d　E2 按天拆解（主子集）\n")
+    w("\n## D5-d E2 Disassembled by day (main subset) \n")
     w(md_table(days))
-    w("\n## D5-e　E2 误报最集中的源主机（主子集）\n")
+    w("\n## D5-e E2 The source host with the highest concentration of false positives (primary subset) \n")
     w(md_table(hosts))
-    w("\n## 文件\n")
-    w("`results/directionA_d5/`：rules.csv、cleaning.csv、key_hosts.csv、e2_by_day.csv、e2_false_flag_hosts.csv、"
-      "summary.json（cl_issues_*.npy / cl_info_*.json 为清洗结果，不入库）。代码：`scripts/directionA_d5_evidence_cleaning.py`。")
+    w("\n## file \n")
+    w("`results/directionA_d5/`:rules.csv、cleaning.csv、key_hosts.csv、e2_by_day.csv、e2_false_flag_hosts.csv、"
+      "summary.json (cl_issues_*.npy / cl_info_*.json are cleaning results and will not be stored in the database). Code: `scripts/directionA_d5_evidence_cleaning.py`.")
     (ROOT / "reports/DIRECTION_A_D5.md").write_text("\n".join(L) + "\n")
 
 

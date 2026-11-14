@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Post hoc test-label reference analysis, 2026-11-07 (descriptive, no training).
+"""LABELGAP transfer revision, 2026-11-07 (descriptive, no training).
 
 Re-scores the saved test predictions of the controlled comparison under four test-label references (original,
 omission fixed only, every other disagreement fixed only, corrected), on all test flows and on exactly matched
@@ -187,24 +187,24 @@ def main() -> None:
     save_json(verdicts, out / "verdicts.json")
 
     # report
-    lines = ["# LABELGAP：已存预测的测试标签重评分（2026-11-07）", "",
-             f"> 生成时间 {time.strftime('%Y-%m-%d %H:%M')}；代码 commit `{git_commit()[:7]}`。"
-             "判读标准 `configs/transfer_rescore_20261107.yaml` 在运行前提交。只重算已存测试预测，不训练。"
-             "相对本项目此前所有结果均为事后分析。", "",
-             "## 一致性检查", "",
-             "原版/修正参考、全部测试流量上的 Macro-F1 与已存逐 run 结果的最大绝对差："
-             + "，".join(f"{k} {v:.1e}" for k, v in sanity_res.items()) + "。", "",
-             "## 预先确定的两项判读（CIC-IDS2017）", "",
-             f"- Tier 1 反转：{'成立' if verdicts['tier1_reversal']['holds'] else '不成立'}"
-             f"（按种子均值 {verdicts['tier1_reversal']['models_reversing']}/5 个模型反转；"
-             f"逐对 {n_rev}/{n_pairs}）。",
-             f"- 漏标归因：{verdicts['omission_attribution']['verdict']}"
-             f"（全部测试流量与 Tier 1 上，只修漏标时修正训练领先的模型数、只修其他错标时原版训练领先的模型数："
-             + "；".join(f"{s} {v['hc_ahead_under_omission_fixed']}/5、{v['ho_ahead_under_other_fixed']}/5"
-                         for s, v in attr.items()) + "）。", "",
-             "## 各参考下的 Macro-F1 差值（修正训练减原版训练，按种子均值）", ""]
-    for metric, title in (("macro_f1", "Macro-F1（参考中出现的类别）"), ("macro_f1_common", "Macro-F1（两版共同类别）"),
-                          ("attack_f1", "二分类攻击 F1"), ("infiltration_f1", "渗透类 F1")):
+    lines = ["# LABELGAP Transfer revision: Saved predictions re-scored (2026-11-07)", "",
+             f">Generation time{time.strftime('%Y-%m-%d %H:%M')};Code commit `{git_commit()[:7]}`."
+             "The interpretation standard `configs/transfer_rescore_20261107.yaml` is submitted before running. Only the saved test predictions are recalculated, not training."
+             "All previous results of this project are post hoc analyses.", "",
+             "## Consistency check", "",
+             "The maximum absolute difference between the original/corrected reference, Macro-F1 on all test traffic and the saved run-by-run results:"
+             + ",".join(f"{k} {v:.1e}" for k, v in sanity_res.items()) + ".", "",
+             "## Predetermined two interpretations (CIC-IDS2017)", "",
+             f"- Tier 1 inversion:{'established' if verdicts['tier1_reversal']['holds'] else 'Not established'}"
+             f"(Mean by seed{verdicts['tier1_reversal']['models_reversing']}/5 model inversion;"
+             f"pair by pair{n_rev}/{n_pairs}).",
+             f"- Attribution of missing bids:{verdicts['omission_attribution']['verdict']}"
+             f"(All test traffic and Tier 1, the number of leading models in corrected training when only missing labels are corrected, and the number of leading models in original training when only other mislabelings are corrected:"
+             + ";".join(f"{s} {v['hc_ahead_under_omission_fixed']}/5、{v['ho_ahead_under_other_fixed']}/5"
+                         for s, v in attr.items()) + ").", "",
+             "## Macro-F1 difference under each reference (corrected training minus original training, mean by seed)", ""]
+    for metric, title in (("macro_f1", "Macro-F1 (category appearing in reference)"), ("macro_f1_common", "Macro-F1 (common category for both versions)"),
+                          ("attack_f1", "Two-class attack F1"), ("infiltration_f1", "Penetration class F1")):
         lines += [f"### {title}", ""]
         t = dmean.pivot_table(index=["dataset", "subset", "model"], columns="reference", values=metric)[REFS]
         t = t.reset_index()
@@ -213,16 +213,16 @@ def main() -> None:
         for ref in REFS:
             t[ref] = t[ref].map(fmt)
         lines += [md_table(t), ""]
-    lines += ["## 逐对反转计数（原版参考下原版训练领先且修正参考下修正训练领先）", ""]
+    lines += ["## Pair-by-pair reversal counting (original training leads under the original reference and corrected training leads under the revised reference)", ""]
     rr = [{"dataset|subset": k, "Macro-F1": f"{v['macro_f1']['pairs_reversing']}/{v['macro_f1']['pairs']}",
-           "Macro-F1 共同类别": f"{v['macro_f1_common']['pairs_reversing']}/{v['macro_f1_common']['pairs']}"}
+           "Macro-F1 common category": f"{v['macro_f1_common']['pairs_reversing']}/{v['macro_f1_common']['pairs']}"}
           for k, v in rev.items()]
     lines += [md_table(pd.DataFrame(rr)), "",
-              "## 测试样本数", ""]
+              "## Number of test samples", ""]
     ns = per_run.groupby(["dataset", "subset"])[["n", "n_omitted", "n_disagree", "n_classes_common"]].first()
     lines += [md_table(ns.reset_index()), "",
-              "逐类样本数见 `class_support.csv`；逐 run 指标 `per_run.csv`；逐对差值 `deltas_per_pair.csv`；"
-              "判读 `verdicts.json`。"]
+              "For the number of samples per class, see `class_support.csv`; for the run-by-run indicator `per_run.csv`; for the pair-wise difference `deltas_per_pair.csv`;"
+              "Interpret `verdicts.json`."]
     rep = ROOT / plan["outputs"]["report"]
     rep.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"done in {time.perf_counter() - t0:.0f}s; report {rep}")

@@ -19,7 +19,7 @@ import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 from sklearn.metrics import f1_score  # noqa: E402
 
-from src.utils import md_table  # noqa: E402
+from build_failure_report import md_table  # noqa: E402
 from src.utils import MODEL_DISPLAY, MODEL_ORDER, git_commit, load_json, load_yaml  # noqa: E402
 
 CONDS = ("noisy", "clean")
@@ -37,7 +37,7 @@ def main() -> None:
     ap.add_argument("--results", default="results/directionA")
     ap.add_argument("--report", default="reports/DIRECTION_A_STAGE1.md")
     ap.add_argument("--interp", default="reports/direction_a_interpretation.md")
-    ap.add_argument("--title", default="CICIDS2017 原版标签 vs Liu 修正标签")
+    ap.add_argument("--title", default="CICIDS2017 original label vs Liu's revised label")
     args = ap.parse_args()
     common = load_yaml(ROOT / args.common)
     rules = load_yaml(ROOT / "configs/direction_a_label_noise.yaml")
@@ -150,21 +150,21 @@ def main() -> None:
     # ---- report -------------------------------------------------------------------------------------------
     L = []
     w = L.append
-    w(f"# DIRECTION A — Stage I：带错标签训练的后果（{args.title}）\n")
-    w(f"> 研究者 2026-09-25 选定（与方向 B 并行）。生成时间 {time.strftime('%Y-%m-%d %H:%M')}；代码 commit "
-      f"`{git_commit()[:7]}`。判读规则 `configs/direction_a_label_noise.yaml` 在训练前提交。同一批行、同一划分，"
-      f"只换训练/验证标签：noisy = 原版标签，clean = Liu 修正标签（上限对照）。测试一律按修正标签评估。"
-      f"{len(models)} 个模型 × {len(seeds)} 个种子 × 2 种条件。\n")
+    w(f"# DIRECTION A — Stage I: The consequences of training with wrong labels ({args.title})\n")
+    w(f">Researcher 2026-09-25 selected (parallel with direction B). Generation time{time.strftime('%Y-%m-%d %H:%M')};Code commit"
+      f"`{git_commit()[:7]}`. Interpretation rules `configs/direction_a_label_noise.yaml` is submitted before training. The same batch of rows, the same division,"
+      f"Only change training/validation labels: noisy = original label, clean = Liu modified label (upper limit control). Tests are always evaluated according to the revision label."
+      f"{len(models)}models ×{len(seeds)}seeds × 2 conditions. \n")
     interp = ROOT / args.interp
     if interp.exists():
         w(interp.read_text().strip() + "\n")
     s = load_json(out / "data_summary.json")
     aff_test_n = int(affected.sum())
-    w("## A-0　数据与第 4 步数据体检\n")
-    w(f"覆盖行 {s['rows']:,}（训练 {s['train']:,} / 验证 {s['val']:,} / 测试 {s['test']:,}），{s['n_features']} 个特征；"
-      f"两版标签不一致的行 {s['affected_rows_total']:,}（{s['global_noise_rate']:.2%}），其中测试集 "
-      f"{s['affected_rows_test']:,}。其中“攻击被原版标成正常”的占 "
-      f"{((yn == benign) & (yc != benign)).sum() / max(aff_test_n, 1):.1%}（测试集），其余方向见 label_transitions.csv。\n")
+    w("## A-0 Data and Step 4 Data Physical Examination \n")
+    w(f"overwrite row{s['rows']:,}(train{s['train']:,}/ verify{s['val']:,}/ test{s['test']:,}),{s['n_features']}characteristics;"
+      f"Lines with inconsistent labels between the two versions{s['affected_rows_total']:,}({s['global_noise_rate']:.2%}), where the test set"
+      f"{s['affected_rows_test']:,}. Among them, the proportion of \"attacks marked as normal by the original version\""
+      f"{((yn == benign) & (yc != benign)).sum() / max(aff_test_n, 1):.1%}(test set), see label_transitions.csv for other directions. \n")
     p = prof.copy()
     p.loc[p["class"] == names[benign], "hidden_as_benign"] = np.nan
     w(md_table(p[["class", "rows_clean", "rows_noisy", "hidden_as_benign", "noise_rate_clean_class", "test_clean",
@@ -174,7 +174,7 @@ def main() -> None:
         "test_clean": "Test rows", "test_affected": "Test affected",
         "train_conflict_rate_clean_labels": "Train conflict rate (clean)",
         "separability_limited": "Separability-limited"})))
-    w("\n## A-1　整体结果（测试集按修正标签评估；3 个种子 mean ± std）\n")
+    w("\n## A-1 Overall results (test set evaluated by revised label; 3 seeds mean ± std) \n")
     tab = []
     for cond in CONDS:
         for m in models:
@@ -188,38 +188,38 @@ def main() -> None:
                         "Affected rows correct": pm(q["affected_correct"].mean(), q["affected_correct"].std(ddof=1)),
                         "Unaffected rows accuracy": pm(q["unaffected_acc"].mean(), q["unaffected_acc"].std(ddof=1))})
     w(md_table(pd.DataFrame(tab)))
-    w(f"\n## A-2　A1：带错标签导致的类别召回下降（配对种子；测试行 ≥ {min_sup} 的类别）\n")
+    w(f"\n ## A-2　A1: Reduced category recall caused by incorrect labels (paired seeds; test row ≥{min_sup}category) \n")
     thr = r["A1_noise_induced_class_failure"]["min_recall_drop"]
-    w(f"规则：召回(clean 训练) − 召回(noisy 训练) ≥ {thr}，且所有种子的差值为正，在 ≥ {kmin} 个模型中成立即标记；"
-      f"上限对照：clean 训练召回 ≥ {rec_ok}。\n")
+    w(f"Rule: Recall (clean training) − Recall (noisy training) ≥{thr}, and the differences of all seeds are positive, at ≥{kmin}Mark the success in each model immediately;"
+      f"Upper limit comparison: clean training recall ≥{rec_ok}.\n")
     cols = ["class", "n_test", "n_affected"] + [f"{m}_{k}" for m in models for k in ("noisy", "clean")] + \
            ["models_failing", "flagged", "oracle_recovers", "method_addressable"]
     show = a1[cols].copy()
     show.columns = ["Class", "Test n", "Affected n"] + [f"{MODEL_DISPLAY[m]} {k}" for m in models for k in ("noisy", "clean")] + \
                    ["Models failing", "Flagged", "Oracle recovers", "Method-addressable"]
     w(md_table(show))
-    w(f"\n## A-3　A2：被错标的测试行上，带错标签训练的模型能否认出真实类别\n")
-    w(f"数值为被错标行中预测为真实（修正）类别的比例（3 个种子均值）。规则：noisy 训练 ≤ "
-      f"{r['A2_hidden_attack_failure']['noisy_trained_at_most']} 的模型 ≥ {kmin} 个即标记；上限对照：clean 训练 ≥ {rec_ok}。\n")
+    w(f"\n ## A-3　A2: On the wrongly labeled test row, can the model trained with the wrong label recognize the real category \n")
+    w(f"Values ​​are the proportion of mislabeled rows that are predicted to be true (corrected) classes (average of 3 seeds). Rule: noisy training ≤"
+      f"{r['A2_hidden_attack_failure']['noisy_trained_at_most']}model ≥{kmin}Each is the mark; upper limit comparison: clean training ≥{rec_ok}.\n")
     cols = ["class", "n_affected_test"] + [f"{m}_{k}" for m in models for k in ("noisy", "clean")] + \
            ["models_failing", "models_oracle_recovers", "flagged", "oracle_recovers", "method_addressable"]
     show = a2[cols].copy()
     show.columns = ["Class", "Affected test n"] + [f"{MODEL_DISPLAY[m]} {k}" for m in models for k in ("noisy", "clean")] + \
                    ["Models failing", "Models oracle ok", "Flagged", "Oracle recovers", "Method-addressable"]
     w(md_table(show))
-    w(f"\n## A-4　A3：常规评测（按原版测试标签）是否掩盖问题\n")
-    w(f"noisy 训练模型：Macro-F1(原版测试标签) − Macro-F1(修正测试标签)；≥ {r['A3_evaluation_masking']['min_overstatement']} "
-      f"的模型 ≥ {kmin} 个即标记。**判定：{'标记' if a3_flag else '不标记'}**。\n")
+    w(f"\n ## A-4　A3: Does the regular evaluation (according to the original test label) cover up the problem? \n")
+    w(f"noisy training model: Macro-F1 (original test label) − Macro-F1 (corrected test label); ≥{r['A3_evaluation_masking']['min_overstatement']} "
+      f"model ≥{kmin}One is the mark. **determination:{'mark' if a3_flag else 'Not marked'}**.\n")
     w(md_table(pd.DataFrame({"Model": [MODEL_DISPLAY[m] for m in models],
                              "Macro-F1 noisy test": [g.loc[("noisy", m), "macro_f1_noisy"] for m in models],
                              "Macro-F1 clean test": [g.loc[("noisy", m), "macro_f1_clean"] for m in models],
                              "Overstatement": [over[m] for m in models],
                              "Accuracy noisy test": [g.loc[("noisy", m), "acc_noisy"] for m in models],
                              "Accuracy clean test": [g.loc[("noisy", m), "acc_clean"] for m in models]})))
-    w("\n## 文件\n")
-    w(f"`{args.results}/`：data_profile.csv、data_summary.json、overall_per_run.csv、per_class_recall_per_run.csv、"
-      f"A1_class_failures.csv、A2_hidden_attack_failures.csv。运行结果：`{args.runs}/{{noisy,clean}}/`。"
-      "代码：`scripts/directionA_analyze.py`（数据准备与运行脚本见对应数据集的 prepare / run 脚本）。")
+    w("\n## file \n")
+    w(f"`{args.results}/`:data_profile.csv、data_summary.json、overall_per_run.csv、per_class_recall_per_run.csv、"
+      f"A1_class_failures.csv, A2_hidden_attack_failures.csv. Running result: `{args.runs}/{{noisy,clean}}/`."
+      "Code: `scripts/directionA_analyze.py` (for data preparation and running scripts, see the prepare/run script of the corresponding data set).")
     (ROOT / args.report).write_text("\n".join(L) + "\n")
     print(pd.DataFrame(tab).to_string(index=False))
     print(a1[["class", "n_test", "models_failing", "flagged", "oracle_recovers", "method_addressable"]].to_string(index=False))
